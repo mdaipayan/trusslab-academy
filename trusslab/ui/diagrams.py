@@ -223,6 +223,9 @@ class DiagramFactory:
             cls._member(fig, nodes, a, b, label, color=cls.INK, width=3)
         cls._supports(fig, nodes, ("A",))
         cls._nodes(fig, nodes)
+        # Support reactions act on the kept free body; arrows are assumed positive.
+        cls._arrow(fig, (-.08, 0), (-.08, .72), "Aᵧ", cls.BLUE, (-.36, .48))
+        cls._arrow(fig, (0, -.08), (.72, -.08), "Aₓ", cls.BLUE, (.43, -.31))
         fig.add_shape(type="line", x0=1.62, x1=1.62, y0=-.18, y1=1.38,
                       line={"color": cls.RED, "width": 2, "dash": "dash"})
         cls._arrow(fig, (1.24, 0), (2.05, 0), "F_BC", cls.GREEN, (1.85, -.22))
@@ -248,9 +251,7 @@ class DiagramFactory:
         fig.add_annotation(x=4.48, y=.38, text="Bᵧ = 0", showarrow=False, bgcolor="rgba(255,255,255,.96)", font={"size": 11, "color": cls.BLUE})
         cls._arrow(fig, (.14, 3.9), (.14, 3.12), "P = 10 kN ↓", cls.AMBER, (.82, 3.55))
         fig.add_shape(type="line", x0=0, y0=3, x1=.14, y1=3, line={"color": cls.SLATE, "width": 1, "dash": "dot"})
-        fig.add_annotation(x=.22, y=2.55, ax=.10, ay=2.95, xref="x", yref="y", axref="x", ayref="y",
-                           text="", showarrow=True, arrowhead=3, arrowsize=1,
-                           arrowwidth=1.8, arrowcolor=cls.BLUE, standoff=1)
+        cls._arrow(fig, (0.02, 3.35), (1.02, 3.35), "u_C is free", cls.BLUE, (.53, 3.65))
         fig.add_annotation(x=.95, y=2.55, text="C can move horizontally<br>in the released structure",
                            showarrow=False, bgcolor="#edf4ff", bordercolor="#cbdcf7",
                            borderwidth=1, borderpad=6, font={"size": 11, "color": "#204a86"})
