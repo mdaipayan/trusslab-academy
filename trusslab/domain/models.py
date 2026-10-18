@@ -77,6 +77,7 @@ class LessonModule:
     quiz: tuple[QuizQuestion, ...]
     diagram_id: str
     experiment_id: str | None = None
+    free_body_ids: tuple[str, ...] = ()
 
     def __post_init__(self) -> None:
         if not all((self.id, self.title, self.subtitle, self.purpose, self.level, self.diagram_id)):
