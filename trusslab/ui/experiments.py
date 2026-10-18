@@ -42,7 +42,7 @@ class ExperimentRenderer:
                                    hovertemplate="Area = %{x} mm²<br>Stress = %{y:.1f} MPa<extra></extra>"))
         fig.add_trace(go.Scatter(x=[area], y=[stress], mode="markers", marker={"size": 12, "color": "#d18b14"}, name="Selected area"))
         fig.update_layout(title="Stress falls as area rises for a fixed force", xaxis_title="Area (mm²)", yaxis_title="Stress (MPa)", height=300, margin={"l": 10, "r": 10, "t": 55, "b": 20}, paper_bgcolor="#fff", plot_bgcolor="#fff")
-        st.plotly_chart(fig, use_container_width=True, config={"displaylogo": False})
+        st.plotly_chart(fig, width="stretch", config={"displaylogo": False})
         st.info("Stress = F/A. This simplified experiment fixes the ideal determinate member force; it does not assess buckling or code compliance.")
 
     @staticmethod
@@ -59,7 +59,7 @@ class ExperimentRenderer:
         for member, area, key in (("AB", area_ab, "F_AB"), ("AC", area_ac, "F_AC"), ("BC", area_bc, "F_BC")):
             force = response[key]
             rows.append({"Member": member, "Area (mm²)": area, "Member force F (kN)": round(force, 3), "Nature": "Tension" if force > 1e-8 else "Compression" if force < -1e-8 else "Zero"})
-        st.dataframe(pd.DataFrame(rows), use_container_width=True, hide_index=True)
+        st.dataframe(pd.DataFrame(rows), width="stretch", hide_index=True)
         terms = response["compatibility_terms"]
         st.markdown("**Compatibility calculation**")
         st.latex(r"R=-\frac{\sum_i F_i^{(0)}n_iL_i/(EA_i)}{\sum_i n_i^2L_i/(EA_i)}")
@@ -70,7 +70,7 @@ class ExperimentRenderer:
                                hovertemplate="%{x}<br>Signed member force F = %{y:.3f} kN<extra></extra>"))
         fig.update_layout(title="Member force F under the selected areas", yaxis_title="Signed member force F (kN)", height=300,
                           margin={"l": 10, "r": 10, "t": 55, "b": 20}, paper_bgcolor="#fff", plot_bgcolor="#fff")
-        st.plotly_chart(fig, use_container_width=True, config={"displaylogo": False})
+        st.plotly_chart(fig, width="stretch", config={"displaylogo": False})
         st.info("This is a truss force-method model: loads act at joints and members carry axial force. Positive force is tension; negative force is compression. The model is educational and does not check buckling or design-code requirements.")
 
     @staticmethod
@@ -87,10 +87,10 @@ class ExperimentRenderer:
         for key, area in (("F_AB", area1), ("F_AC", area2), ("F_BC", area3)):
             force = response[key]
             rows.append({"Member": key.replace("F_", ""), "Area (mm²)": area, "Signed member force F (kN)": round(force, 3), "Nature": "Tension" if force > 1e-8 else "Compression" if force < -1e-8 else "Zero"})
-        st.dataframe(pd.DataFrame(rows), use_container_width=True, hide_index=True)
+        st.dataframe(pd.DataFrame(rows), width="stretch", hide_index=True)
         fig = go.Figure(go.Bar(x=[row["Member"] for row in rows], y=[row["Signed member force F (kN)"] for row in rows], marker_color=["#16845a" if row["Signed member force F (kN)"] >= 0 else "#c43c4b" for row in rows], text=[f"{row['Signed member force F (kN)']:.3f}" for row in rows], textposition="outside", hovertemplate="%{x}<br>Signed member force F = %{y:.3f} kN<extra></extra>"))
         fig.update_layout(title="Signed member force F under the selected areas", yaxis_title="Member force F (kN)", height=300, margin={"l": 10, "r": 10, "t": 55, "b": 20}, paper_bgcolor="#fff", plot_bgcolor="#fff")
-        st.plotly_chart(fig, use_container_width=True, config={"displaylogo": False})
+        st.plotly_chart(fig, width="stretch", config={"displaylogo": False})
         st.caption("Positive force = tension; negative force = compression under the lesson's convention. The calculation reproduces the source equation and is not an independent DSM re-analysis.")
 
     @staticmethod
@@ -101,7 +101,7 @@ class ExperimentRenderer:
         total = sum(value for _, value in terms)
         rows = [{"Primary member": name, "n²L term (mm)": round(value)} for name, value in terms]
         rows.append({"Primary member": "Sum of displayed terms", "n²L term (mm)": total})
-        st.dataframe(pd.DataFrame(rows), use_container_width=True, hide_index=True)
+        st.dataframe(pd.DataFrame(rows), width="stretch", hide_index=True)
         st.warning(f"The displayed terms sum to {total:,} mm, not the 13,400 mm stated in the PDF. Its reported X = −1.3433 kN requires instructor verification; the compatibility convention should also be clarified before using that value as an answer key.")
 
     @staticmethod
@@ -126,5 +126,5 @@ class ExperimentRenderer:
         fig.add_hline(y=allowable, line_dash="dash", line_color="#c43c4b", annotation_text="Allowable stress")
         fig.add_trace(go.Scatter(x=[area], y=[float(result["stress_mpa"])], mode="markers", marker={"size": 12, "color": "#d18b14"}, name="Selected design"))
         fig.update_layout(title="Feasibility boundary for the chosen load", xaxis_title="Area (mm²)", yaxis_title="Stress (MPa)", height=300, margin={"l": 10, "r": 10, "t": 55, "b": 20}, paper_bgcolor="#fff", plot_bgcolor="#fff")
-        st.plotly_chart(fig, use_container_width=True, config={"displaylogo": False})
+        st.plotly_chart(fig, width="stretch", config={"displaylogo": False})
         st.info("For this one member, weight is proportional to A·L. A real truss optimization needs all member lengths/areas, equilibrium or a stiffness solver, stress and displacement constraints, and additional engineering checks.")
