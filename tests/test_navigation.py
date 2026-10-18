@@ -85,5 +85,14 @@ class SidebarNavigationTests(unittest.TestCase):
         self.assertIn("_render_module(MODULES[index], index)", main_source)
 
 
+    def test_quiz_hints_are_not_rendered(self):
+        root = Path(__file__).parents[1]
+        components = (root / "trusslab" / "ui" / "components.py").read_text(encoding="utf-8")
+        self.assertNotIn("Hint for question", components)
+        self.assertNotIn("st.write(question.hint)", components)
+        self.assertIn("Check answers", components)
+        self.assertIn("learning.evaluate(module, answers)", components)
+
+
 if __name__ == "__main__":
     unittest.main()

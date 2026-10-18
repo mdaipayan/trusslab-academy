@@ -135,8 +135,6 @@ def render_quiz(module: LessonModule, learning: LearningService, progress: Progr
                 key=f"answer_{module.id}_{attempt}_{question.id}",
                 label_visibility="collapsed",
             )
-            with st.expander(f"Hint for question {index}"):
-                st.write(question.hint)
         submitted = st.form_submit_button("Check answers", type="primary", width="stretch")
     if submitted:
         answers: dict[str, str | None] = {
