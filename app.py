@@ -11,6 +11,7 @@ from trusslab.services.learning import LearningService, ProgressService
 from trusslab.ui.components import inject_theme, render_glossary, render_lesson_blocks, render_objectives, render_quiz
 from trusslab.ui.diagrams import DiagramFactory
 from trusslab.ui.experiments import ExperimentRenderer
+from trusslab.ui.navigation import NAV_LABELS, navigation_groups
 
 st.set_page_config(page_title="TrussLab Academy", page_icon="🔺", layout="wide", initial_sidebar_state="expanded")
 
@@ -31,37 +32,75 @@ FREE_BODY_TITLES = {
 
 
 def _navigate(module_id: str) -> None:
-    st.session_state["module_nav_radio"] = module_id
+    """Select a lesson from the sidebar or Previous/Next controls."""
+    st.session_state["active_module_id"] = module_id
 
 
 def _render_sidebar() -> str:
     st.sidebar.markdown(
-        '<div style="padding:.45rem 0 .3rem"><div style="font-size:.68rem;letter-spacing:.16em;font-weight:900;color:#75d8cc;text-transform:uppercase">CIVIL ENGINEERING · LEARN</div>'
-        '<div style="font-family:Manrope,Segoe UI,sans-serif;font-size:1.62rem;font-weight:900;letter-spacing:-.05em;color:#fff">TrussLab <span style="color:#75d8cc">Academy</span></div>'
-        '<div style="color:#afc4cf;font-size:.82rem;line-height:1.5;margin-top:.3rem">Understand the behaviour. Then solve the structure.</div></div>',
+        '<div class="academy-brand">'
+        '<div class="academy-eyebrow">CIVIL ENGINEERING · LEARN</div>'
+        '<div class="academy-brand-title">TrussLab <span>Academy</span></div>'
+        '<div class="academy-brand-copy">Understand the behaviour. Then solve the structure.</div>'
+        '</div>',
         unsafe_allow_html=True,
     )
     st.sidebar.divider()
+
     completed = PROGRESS.mastered_count()
     percent = PROGRESS.completion_percent(len(MODULES))
-    st.sidebar.markdown("<div style='font-size:.72rem;letter-spacing:.1em;font-weight:800;color:#9eb4c0;text-transform:uppercase'>Your progress</div>", unsafe_allow_html=True)
-    st.sidebar.markdown(f"<div style='font-size:1.75rem;font-weight:850;color:#fff;margin:.12rem 0'>{completed}<span style='font-size:.95rem;color:#9eb4c0'> / {len(MODULES)} modules</span></div>", unsafe_allow_html=True)
+    st.sidebar.markdown(
+        '<div class="sidebar-section-kicker">YOUR PROGRESS</div>'
+        f'<div class="sidebar-progress-row"><span class="sidebar-progress-count">{completed}</span>'
+        f'<span class="sidebar-progress-total">of {len(MODULES)} mastered</span>'
+        f'<span class="sidebar-progress-percent">{percent}%</span></div>',
+        unsafe_allow_html=True,
+    )
     st.sidebar.progress(percent / 100)
-    st.sidebar.caption(f"{percent}% mastered · Scores and attempts last for this session")
+    st.sidebar.caption("Mastery is saved for this session.")
     st.sidebar.divider()
 
     module_by_id = {module.id: module for module in MODULES}
-    def format_module(module_id: str) -> str:
-        module = module_by_id[module_id]
-        status = "✓" if PROGRESS.is_mastered(module_id) else "○"
-        return f"{status}  {escape(module.title)}"
+    module_ids = tuple(module.id for module in MODULES)
+    selected_id = st.session_state.get("active_module_id", MODULES[0].id)
+    if selected_id not in module_by_id:
+        selected_id = MODULES[0].id
+    st.session_state["active_module_id"] = selected_id
 
-    selected_id = st.sidebar.radio(
-        "YOUR LEARNING PATH", options=[module.id for module in MODULES], index=0,
-        key="module_nav_radio", format_func=format_module,
-    )
+    st.sidebar.markdown('<div class="sidebar-nav-title">YOUR LEARNING PATH</div>', unsafe_allow_html=True)
+    for group_title, group_ids in navigation_groups(module_ids):
+        if not group_ids:
+            continue
+        group_done = sum(PROGRESS.is_mastered(module_id) for module_id in group_ids)
+        st.sidebar.markdown(
+            '<div class="sidebar-nav-group">'
+            f'<span>{escape(group_title)}</span>'
+            f'<span class="sidebar-nav-group-count">{group_done}/{len(group_ids)}</span>'
+            '</div>',
+            unsafe_allow_html=True,
+        )
+        for module_id in group_ids:
+            module = module_by_id[module_id]
+            index = module_ids.index(module_id) + 1
+            mastered = PROGRESS.is_mastered(module_id)
+            marker = "✓" if mastered else f"{index:02d}"
+            label = f"{marker}   {NAV_LABELS.get(module_id, module.title)}"
+            st.sidebar.button(
+                label,
+                key=f"nav_{module_id}",
+                type="primary" if module_id == selected_id else "secondary",
+                use_container_width=True,
+                on_click=_navigate,
+                args=(module_id,),
+                help=f"Module {index} of {len(MODULES)} · {module.title}",
+            )
+
     st.sidebar.divider()
-    st.sidebar.markdown("<div style='color:#9eb4c0;font-size:.78rem;line-height:1.7'>Every module ends with a 3-question mastery quiz. Get 3/3 to mark its objective as achieved. Progress is session-based in this starter.</div>", unsafe_allow_html=True)
+    st.sidebar.markdown(
+        '<div class="sidebar-footer-note">Choose a lesson above. Each lesson ends with a '
+        '<strong>3-question quiz</strong>; score 3/3 to achieve mastery.</div>',
+        unsafe_allow_html=True,
+    )
     return selected_id
 
 
