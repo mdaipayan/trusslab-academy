@@ -99,5 +99,16 @@ hr { border-color: var(--line); }
 .pill--success { background: var(--success-soft); color: #145e3d; }
 .pill--neutral { background: #e9eef2; color: #40586a; }
 @media (max-width: 520px) { .hero-title { font-size: 1.65rem; } .module-title { font-size: 1.55rem; overflow-wrap: anywhere; } [data-testid="stMetric"] { padding: .65rem .7rem; } [data-testid="stMetricValue"] { font-size: 1.25rem; } .quiz-question { padding: .75rem .8rem .35rem; } }
+
+/* Emphasise key terms without adding more paragraphs */
+.main [data-testid="stMarkdownContainer"] strong { color: #08796f; font-weight: 800; }
+.content-heading { padding-left: .55rem; border-left: 3px solid var(--teal); }
+[data-testid="stTabs"] button { font-weight: 750; }
+.fbd-legend { display: flex; flex-wrap: wrap; gap: .5rem; margin: .25rem 0 .65rem; color: var(--muted); font-size: .82rem; }
+.fbd-chip { display: inline-block; border-radius: 999px; padding: .22rem .55rem; background: #fff; border: 1px solid var(--line); font-weight: 700; }
+.fbd-chip--load { color: #a86400; border-color: #f3c969; }
+.fbd-chip--reaction { color: #245fbd; border-color: #bcd2f5; }
+.fbd-chip--tension { color: #16794b; border-color: #b8e5ce; }
+.fbd-chip--compression { color: #b42332; border-color: #f1b8be; }
 </style>
 """
