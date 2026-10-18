@@ -74,5 +74,16 @@ class SidebarNavigationTests(unittest.TestCase):
         self.assertIn('color:#e5eef2 !important;', theme_css)
 
 
+    def test_main_page_does_not_render_top_hero_or_summary_cards(self):
+        root = Path(__file__).parents[1]
+        app_source = (root / "app.py").read_text(encoding="utf-8")
+        main_source = app_source[app_source.index("def main()"):]
+        self.assertNotIn("def _render_header", app_source)
+        self.assertNotIn("_render_header()", main_source)
+        self.assertNotIn("hero-panel", main_source)
+        self.assertNotIn('metric("Modules mastered"', main_source)
+        self.assertIn("_render_module(MODULES[index], index)", main_source)
+
+
 if __name__ == "__main__":
     unittest.main()
