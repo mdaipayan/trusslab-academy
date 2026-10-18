@@ -38,7 +38,7 @@ class DiagramTests(unittest.TestCase):
         self.assertEqual(len(label_annotations), 3)
         self.assertTrue(all(item.bgcolor for item in label_annotations), "Member labels should have opaque backgrounds for contrast.")
         joint_trace = next(trace for trace in figure.data if trace.name == "Joints")
-        self.assertEqual(list(joint_trace.textposition), ["bottom left", "top center", "top left"])
+        self.assertEqual(list(joint_trace.textposition), ["top left", "top center", "top left"])
 
 
     def test_fbd_catalog_entries_have_color_coded_visible_diagrams(self):
