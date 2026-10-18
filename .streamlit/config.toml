@@ -6,5 +6,15 @@ secondaryBackgroundColor = "#FFFFFF"
 textColor = "#152535"
 font = "sans serif"
 
+# Give the sidebar its own dark palette so Streamlit's native widget colors
+# match the custom sidebar background (including inactive secondary buttons).
+[theme.sidebar]
+primaryColor = "#48C7B6"
+backgroundColor = "#152535"
+secondaryBackgroundColor = "#1B3040"
+textColor = "#EDF5F7"
+borderColor = "#2B4353"
+buttonRadius = "0.55rem"
+
 [server]
 headless = true
