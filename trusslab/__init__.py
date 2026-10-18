@@ -1,0 +1,1 @@
+"""TrussLab Academy package."""
