@@ -112,98 +112,99 @@ hr { border-color: var(--line); }
 .fbd-chip--compression { color: #b42332; border-color: #f1b8be; }
 
 /* Compact, grouped learning-path sidebar */
-[data-testid="stSidebar"] .academy-brand { padding: .35rem 0 .25rem; }
-[data-testid="stSidebar"] .academy-eyebrow { color:#75d8cc; font-size:.66rem; font-weight:900; letter-spacing:.14em; text-transform:uppercase; }
-[data-testid="stSidebar"] .academy-brand-title { margin-top:.16rem; color:#fff; font-family:'Manrope','Segoe UI',sans-serif !important; font-size:1.45rem; font-weight:900; letter-spacing:-.045em; white-space:nowrap; }
-[data-testid="stSidebar"] .academy-brand-title span { color:#75d8cc; }
-[data-testid="stSidebar"] .academy-brand-copy { color:#afc4cf; font-size:.78rem; line-height:1.4; margin-top:.22rem; max-width:230px; }
-[data-testid="stSidebar"] .sidebar-section-kicker { color:#9eb4c0; font-size:.68rem; font-weight:850; letter-spacing:.12em; margin-bottom:.18rem; }
-[data-testid="stSidebar"] .sidebar-progress-row { display:flex; align-items:baseline; gap:.35rem; margin:.02rem 0 .1rem; }
-[data-testid="stSidebar"] .sidebar-progress-count { color:#fff; font-size:1.65rem; font-weight:900; line-height:1.1; }
-[data-testid="stSidebar"] .sidebar-progress-total { color:#b5c9d2; font-size:.82rem; font-weight:600; }
-[data-testid="stSidebar"] .sidebar-progress-percent { margin-left:auto; color:#75d8cc; font-size:.8rem; font-weight:850; }
-[data-testid="stSidebar"] .sidebar-nav-title { color:#edf5f7; font-size:.78rem; font-weight:850; letter-spacing:.09em; margin-bottom:.35rem; }
-[data-testid="stSidebar"] .sidebar-nav-group { display:flex; justify-content:space-between; align-items:center; padding:.42rem .1rem .25rem; margin-top:.06rem; color:#8eaab8; font-size:.63rem; font-weight:900; letter-spacing:.12em; }
-[data-testid="stSidebar"] .sidebar-nav-group-count { color:#6f8a99; letter-spacing:0; font-size:.68rem; }
-[data-testid="stSidebar"] .stButton > button { display:flex; align-items:center; justify-content:flex-start; text-align:left; padding:.42rem .63rem; min-height:2.3rem; border-radius:10px; font-size:.84rem; font-weight:650; line-height:1.22; white-space:normal; background:#1b3040; border-color:#2b4353; color:#dce8ed; box-shadow:none; }
-[data-testid="stSidebar"] .stButton > button:hover { background:#223d4e; border-color:#4f7889; color:#fff; transform:translateY(-1px); }
-[data-testid="stSidebar"] .stButton > button[kind="primary"] { background:#0d9488; border-color:#43c4b7; color:#fff; font-weight:850; box-shadow:0 3px 9px rgba(0,0,0,.12); }
-[data-testid="stSidebar"] .stButton > button[kind="primary"]:hover { background:#0b8278; border-color:#72d9cf; color:#fff; }
-[data-testid="stSidebar"] .sidebar-footer-note { color:#9eb4c0; font-size:.73rem; line-height:1.55; padding:.05rem 0 .3rem; }
-[data-testid="stSidebar"] .sidebar-footer-note strong { color:#e9f7f8; }
-[data-testid="stSidebar"] [data-testid="stProgressBar"] { margin:.08rem 0 .12rem; }
-@media (max-width: 850px) {
-  [data-testid="stSidebar"] .academy-brand-title { font-size:1.34rem; }
-  [data-testid="stSidebar"] .stButton > button { min-height:2.45rem; }
-}
-
-
-/* Sidebar fit fix: keep all ten lessons compact, legible, and visible */
-[data-testid="stSidebarContent"] { padding: .55rem .62rem .6rem !important; }
-[data-testid="stSidebar"] [data-testid="stVerticalBlock"] { gap: .32rem !important; }
-[data-testid="stSidebar"] hr { margin: .28rem 0 !important; }
+[data-testid="stSidebarContent"] { padding: .55rem .62rem .65rem !important; }
 [data-testid="stSidebar"] .academy-brand { padding: .05rem 0 .1rem !important; }
-[data-testid="stSidebar"] .academy-brand-title { font-size: 1.28rem !important; margin-top: .08rem !important; }
-[data-testid="stSidebar"] .academy-brand-copy { font-size: .72rem !important; line-height: 1.25 !important; margin-top: .12rem !important; }
-[data-testid="stSidebar"] .sidebar-section-kicker { margin: 0 !important; font-size: .64rem !important; }
-[data-testid="stSidebar"] .sidebar-progress-row { margin: 0 !important; }
-[data-testid="stSidebar"] .sidebar-progress-count { font-size: 1.42rem !important; }
-[data-testid="stSidebar"] [data-testid="stProgressBar"] { margin: .02rem 0 !important; }
-[data-testid="stSidebar"] .sidebar-nav-title { margin: 0 !important; font-size: .72rem !important; }
-[data-testid="stSidebar"] .sidebar-nav-group { padding: .22rem .1rem .02rem !important; margin: 0 !important; font-size: .59rem !important; }
-[data-testid="stSidebar"] .sidebar-nav-group-count { font-size: .61rem !important; }
+[data-testid="stSidebar"] .academy-eyebrow { color:#75d8cc; font-size:.64rem; font-weight:900; letter-spacing:.14em; text-transform:uppercase; line-height:1.25; }
+[data-testid="stSidebar"] .academy-brand-title { margin-top:.08rem; color:#fff; font-family:'Manrope','Segoe UI',sans-serif !important; font-size:1.28rem; font-weight:900; letter-spacing:-.045em; white-space:nowrap; line-height:1.2; }
+[data-testid="stSidebar"] .academy-brand-title span { color:#75d8cc; }
+[data-testid="stSidebar"] .academy-brand-copy { color:#afc4cf; font-size:.72rem; line-height:1.28; margin-top:.12rem; max-width:230px; }
+[data-testid="stSidebar"] .sidebar-section-kicker { display:block; color:#9eb4c0; font-size:.64rem; font-weight:850; letter-spacing:.12em; line-height:1.3; margin:.04rem 0 .1rem !important; }
+[data-testid="stSidebar"] .sidebar-progress-row { display:flex; align-items:baseline; gap:.35rem; margin:0 0 .08rem !important; line-height:1.2; }
+[data-testid="stSidebar"] .sidebar-progress-count { color:#fff; font-size:1.42rem; font-weight:900; line-height:1.1; }
+[data-testid="stSidebar"] .sidebar-progress-total { color:#d0dde3; font-size:.8rem; font-weight:650; }
+[data-testid="stSidebar"] .sidebar-progress-percent { margin-left:auto; color:#75d8cc; font-size:.8rem; font-weight:850; }
+[data-testid="stSidebar"] [data-testid="stProgressBar"] { margin:.08rem 0 .06rem !important; }
+[data-testid="stSidebar"] hr { border-color:#344958; margin:.34rem 0 !important; }
+[data-testid="stSidebar"] .sidebar-nav-title { display:block; color:#ffffff; font-size:.75rem; font-weight:900; letter-spacing:.09em; line-height:1.35; padding:.12rem 0 .2rem; margin:.12rem 0 .14rem !important; }
+[data-testid="stSidebar"] .sidebar-nav-group { display:flex; justify-content:space-between; align-items:center; min-height:.85rem; padding:.18rem .1rem .08rem !important; margin:.20rem 0 .12rem !important; color:#9bb4c1; font-size:.60rem; font-weight:900; letter-spacing:.11em; line-height:1.25; }
+[data-testid="stSidebar"] .sidebar-nav-group-count { color:#7896a5; letter-spacing:0; font-size:.63rem; }
+[data-testid="stSidebar"] [data-testid="stVerticalBlock"] { gap:.42rem !important; }
 
-/* Streamlit's default secondary button surface is white; force the dark theme
-   with sufficient contrast for inactive lessons. */
-[data-testid="stSidebar"] .stButton > button[kind="secondary"] {
-  background: #1b3040 !important;
-  background-color: #1b3040 !important;
-  border: 1px solid #2b4353 !important;
-  color: #e5eef2 !important;
-  box-shadow: none !important;
+/* Stable Streamlit button test IDs are used instead of the old kind= CSS
+   attribute. The latter stopped matching current Streamlit button markup. */
+[data-testid="stSidebar"] button[data-testid="stBaseButton-secondary"] {
+  display:flex !important;
+  align-items:center !important;
+  justify-content:flex-start !important;
+  text-align:left !important;
+  min-height:1.82rem !important;
+  height:auto !important;
+  padding:.18rem .48rem !important;
+  border-radius:8px !important;
+  border:1px solid #355064 !important;
+  background:#1b3040 !important;
+  background-color:#1b3040 !important;
+  color:#e5eef2 !important;
+  font-size:.77rem !important;
+  font-weight:650 !important;
+  line-height:1.18 !important;
+  white-space:normal !important;
+  box-shadow:none !important;
+  margin:0 !important;
+  transform:none !important;
 }
-[data-testid="stSidebar"] .stButton > button[kind="secondary"] p,
-[data-testid="stSidebar"] .stButton > button[kind="secondary"] span {
-  color: #e5eef2 !important;
+[data-testid="stSidebar"] button[data-testid="stBaseButton-secondary"] p,
+[data-testid="stSidebar"] button[data-testid="stBaseButton-secondary"] span {
+  color:#e5eef2 !important;
+  font-size:.77rem !important;
+  line-height:1.18 !important;
+  margin:0 !important;
 }
-[data-testid="stSidebar"] .stButton > button[kind="secondary"]:hover {
-  background: #28485a !important;
-  background-color: #28485a !important;
-  border-color: #5c8b9a !important;
-  color: #ffffff !important;
+[data-testid="stSidebar"] button[data-testid="stBaseButton-secondary"]:hover {
+  background:#28485a !important;
+  background-color:#28485a !important;
+  border-color:#71a0b0 !important;
+  color:#ffffff !important;
 }
-[data-testid="stSidebar"] .stButton > button[kind="secondary"]:hover p,
-[data-testid="stSidebar"] .stButton > button[kind="secondary"]:hover span {
-  color: #ffffff !important;
+[data-testid="stSidebar"] button[data-testid="stBaseButton-secondary"]:hover p,
+[data-testid="stSidebar"] button[data-testid="stBaseButton-secondary"]:hover span {
+  color:#ffffff !important;
 }
-[data-testid="stSidebar"] .stButton > button[kind="primary"] {
-  background: #0d9488 !important;
-  background-color: #0d9488 !important;
-  border-color: #56d0c4 !important;
-  color: #ffffff !important;
+[data-testid="stSidebar"] button[data-testid="stBaseButton-primary"] {
+  display:flex !important;
+  align-items:center !important;
+  justify-content:flex-start !important;
+  text-align:left !important;
+  min-height:1.82rem !important;
+  height:auto !important;
+  padding:.18rem .48rem !important;
+  border-radius:8px !important;
+  border:1px solid #56d0c4 !important;
+  background:#0d9488 !important;
+  background-color:#0d9488 !important;
+  color:#ffffff !important;
+  font-size:.77rem !important;
+  font-weight:850 !important;
+  line-height:1.18 !important;
+  white-space:normal !important;
+  box-shadow:0 2px 7px rgba(0,0,0,.12) !important;
+  margin:0 !important;
+  transform:none !important;
 }
-[data-testid="stSidebar"] .stButton > button[kind="primary"] p,
-[data-testid="stSidebar"] .stButton > button[kind="primary"] span {
-  color: #ffffff !important;
+[data-testid="stSidebar"] button[data-testid="stBaseButton-primary"] p,
+[data-testid="stSidebar"] button[data-testid="stBaseButton-primary"] span {
+  color:#ffffff !important;
+  font-size:.77rem !important;
+  line-height:1.18 !important;
+  margin:0 !important;
 }
-[data-testid="stSidebar"] .stButton > button {
-  min-height: 1.78rem !important;
-  height: auto !important;
-  padding: .20rem .48rem !important;
-  border-radius: 8px !important;
-  font-size: .77rem !important;
-  line-height: 1.12 !important;
-  font-weight: 650 !important;
-  white-space: normal !important;
-  text-align: left !important;
-  justify-content: flex-start !important;
-  margin: 0 !important;
-  transform: none !important;
+[data-testid="stSidebar"] button[data-testid^="stBaseButton-"]:focus-visible {
+  outline:3px solid #f0b429 !important;
+  outline-offset:2px !important;
 }
-[data-testid="stSidebar"] .stButton > button p {
-  font-size: .77rem !important;
-  line-height: 1.12 !important;
-  margin: 0 !important;
+@media (max-width: 850px) {
+  [data-testid="stSidebar"] .academy-brand-title { font-size:1.24rem !important; }
+  [data-testid="stSidebar"] button[data-testid^="stBaseButton-"] { min-height:2rem !important; }
 }
 
 </style>
