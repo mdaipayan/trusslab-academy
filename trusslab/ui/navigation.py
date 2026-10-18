@@ -11,7 +11,7 @@ NAV_LABELS: Final[dict[str, str]] = {
     "determinacy": "Determinacy",
     "joints": "Method of joints",
     "sections": "Method of sections",
-    "determinate-example": "3–4–5 worked example",
+    "determinate-example": "Worked 3–4–5 truss",
     "truss-compatibility": "Truss compatibility",
     "indeterminate-triangle": "Redundant reaction",
     "force-method": "Force method",
@@ -39,3 +39,9 @@ def navigation_groups(module_ids: tuple[str, ...]) -> tuple[tuple[str, tuple[str
     if ungrouped:
         return groups + (("MORE", ungrouped),)
     return groups
+
+
+def navigation_label(module_id: str, mastered: bool = False) -> str:
+    """Return a concise sidebar label without a lesson number."""
+    label = NAV_LABELS.get(module_id, module_id.replace("-", " ").title())
+    return f"✓  {label}" if mastered else label

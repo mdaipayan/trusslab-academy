@@ -11,7 +11,7 @@ from trusslab.services.learning import LearningService, ProgressService
 from trusslab.ui.components import inject_theme, render_glossary, render_lesson_blocks, render_objectives, render_quiz
 from trusslab.ui.diagrams import DiagramFactory
 from trusslab.ui.experiments import ExperimentRenderer
-from trusslab.ui.navigation import NAV_LABELS, navigation_groups
+from trusslab.ui.navigation import navigation_groups, navigation_label
 
 st.set_page_config(page_title="TrussLab Academy", page_icon="🔺", layout="wide", initial_sidebar_state="expanded")
 
@@ -41,7 +41,7 @@ def _render_sidebar() -> str:
         '<div class="academy-brand">'
         '<div class="academy-eyebrow">CIVIL ENGINEERING · LEARN</div>'
         '<div class="academy-brand-title">TrussLab <span>Academy</span></div>'
-        '<div class="academy-brand-copy">Understand the behaviour. Then solve the structure.</div>'
+        '<div class="academy-brand-copy">Learn trusses · Solve step by step</div>'
         '</div>',
         unsafe_allow_html=True,
     )
@@ -57,7 +57,6 @@ def _render_sidebar() -> str:
         unsafe_allow_html=True,
     )
     st.sidebar.progress(percent / 100)
-    st.sidebar.caption("Mastery is saved for this session.")
     st.sidebar.divider()
 
     module_by_id = {module.id: module for module in MODULES}
@@ -83,24 +82,17 @@ def _render_sidebar() -> str:
             module = module_by_id[module_id]
             index = module_ids.index(module_id) + 1
             mastered = PROGRESS.is_mastered(module_id)
-            marker = "✓" if mastered else f"{index:02d}"
-            label = f"{marker}   {NAV_LABELS.get(module_id, module.title)}"
+            label = navigation_label(module_id, mastered)
             st.sidebar.button(
                 label,
                 key=f"nav_{module_id}",
                 type="primary" if module_id == selected_id else "secondary",
-                use_container_width=True,
+                width="stretch",
                 on_click=_navigate,
                 args=(module_id,),
                 help=f"Module {index} of {len(MODULES)} · {module.title}",
             )
 
-    st.sidebar.divider()
-    st.sidebar.markdown(
-        '<div class="sidebar-footer-note">Choose a lesson above. Each lesson ends with a '
-        '<strong>3-question quiz</strong>; score 3/3 to achieve mastery.</div>',
-        unsafe_allow_html=True,
-    )
     return selected_id
 
 
@@ -144,7 +136,7 @@ def _render_free_body_diagrams(module: LessonModule) -> None:
         fbd_id = module.free_body_ids[0]
         st.plotly_chart(
             DiagramFactory.build_free_body(fbd_id),
-            use_container_width=True,
+            width="stretch",
             config={"responsive": True, "displaylogo": False, "scrollZoom": False},
             key=f"fbd_{module.id}_{fbd_id}",
         )
@@ -155,7 +147,7 @@ def _render_free_body_diagrams(module: LessonModule) -> None:
         with tab:
             st.plotly_chart(
                 DiagramFactory.build_free_body(fbd_id),
-                use_container_width=True,
+                width="stretch",
                 config={"responsive": True, "displaylogo": False, "scrollZoom": False},
                 key=f"fbd_{module.id}_{fbd_id}",
             )
@@ -185,7 +177,7 @@ def _render_module(module: LessonModule, index: int) -> None:
     with right:
         st.markdown("### See the structure")
         st.plotly_chart(
-            DiagramFactory.build(module.diagram_id), use_container_width=True,
+            DiagramFactory.build(module.diagram_id), width="stretch",
             config={"responsive": True, "displaylogo": False, "scrollZoom": False},
             key=f"diagram_{module.id}",
         )
@@ -206,18 +198,18 @@ def _render_module(module: LessonModule, index: int) -> None:
     prev_col, progress_col, next_col = st.columns([1, 1.4, 1])
     with prev_col:
         if previous_id:
-            st.button("← Previous module", key=f"prev_{module.id}", use_container_width=True,
+            st.button("← Previous module", key=f"prev_{module.id}", width="stretch",
                        on_click=_navigate, args=(previous_id,))
         else:
-            st.button("← Course start", key="prev_start", disabled=True, use_container_width=True)
+            st.button("← Course start", key="prev_start", disabled=True, width="stretch")
     with progress_col:
         st.markdown(f'<div class="muted" style="text-align:center;padding:.7rem 0">Module {index+1} of {len(MODULES)} · {PROGRESS.mastered_count()} objectives achieved</div>', unsafe_allow_html=True)
     with next_col:
         if next_id:
-            st.button("Next module →", key=f"next_{module.id}", use_container_width=True,
+            st.button("Next module →", key=f"next_{module.id}", width="stretch",
                        on_click=_navigate, args=(next_id,))
         else:
-            st.button("End of learning path", key="next_end", disabled=True, use_container_width=True)
+            st.button("End of learning path", key="next_end", disabled=True, width="stretch")
 
 
 def main() -> None:

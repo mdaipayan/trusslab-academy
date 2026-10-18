@@ -137,5 +137,74 @@ hr { border-color: var(--line); }
   [data-testid="stSidebar"] .stButton > button { min-height:2.45rem; }
 }
 
+
+/* Sidebar fit fix: keep all ten lessons compact, legible, and visible */
+[data-testid="stSidebarContent"] { padding: .55rem .62rem .6rem !important; }
+[data-testid="stSidebar"] [data-testid="stVerticalBlock"] { gap: .32rem !important; }
+[data-testid="stSidebar"] hr { margin: .28rem 0 !important; }
+[data-testid="stSidebar"] .academy-brand { padding: .05rem 0 .1rem !important; }
+[data-testid="stSidebar"] .academy-brand-title { font-size: 1.28rem !important; margin-top: .08rem !important; }
+[data-testid="stSidebar"] .academy-brand-copy { font-size: .72rem !important; line-height: 1.25 !important; margin-top: .12rem !important; }
+[data-testid="stSidebar"] .sidebar-section-kicker { margin: 0 !important; font-size: .64rem !important; }
+[data-testid="stSidebar"] .sidebar-progress-row { margin: 0 !important; }
+[data-testid="stSidebar"] .sidebar-progress-count { font-size: 1.42rem !important; }
+[data-testid="stSidebar"] [data-testid="stProgressBar"] { margin: .02rem 0 !important; }
+[data-testid="stSidebar"] .sidebar-nav-title { margin: 0 !important; font-size: .72rem !important; }
+[data-testid="stSidebar"] .sidebar-nav-group { padding: .22rem .1rem .02rem !important; margin: 0 !important; font-size: .59rem !important; }
+[data-testid="stSidebar"] .sidebar-nav-group-count { font-size: .61rem !important; }
+
+/* Streamlit's default secondary button surface is white; force the dark theme
+   with sufficient contrast for inactive lessons. */
+[data-testid="stSidebar"] .stButton > button[kind="secondary"] {
+  background: #1b3040 !important;
+  background-color: #1b3040 !important;
+  border: 1px solid #2b4353 !important;
+  color: #e5eef2 !important;
+  box-shadow: none !important;
+}
+[data-testid="stSidebar"] .stButton > button[kind="secondary"] p,
+[data-testid="stSidebar"] .stButton > button[kind="secondary"] span {
+  color: #e5eef2 !important;
+}
+[data-testid="stSidebar"] .stButton > button[kind="secondary"]:hover {
+  background: #28485a !important;
+  background-color: #28485a !important;
+  border-color: #5c8b9a !important;
+  color: #ffffff !important;
+}
+[data-testid="stSidebar"] .stButton > button[kind="secondary"]:hover p,
+[data-testid="stSidebar"] .stButton > button[kind="secondary"]:hover span {
+  color: #ffffff !important;
+}
+[data-testid="stSidebar"] .stButton > button[kind="primary"] {
+  background: #0d9488 !important;
+  background-color: #0d9488 !important;
+  border-color: #56d0c4 !important;
+  color: #ffffff !important;
+}
+[data-testid="stSidebar"] .stButton > button[kind="primary"] p,
+[data-testid="stSidebar"] .stButton > button[kind="primary"] span {
+  color: #ffffff !important;
+}
+[data-testid="stSidebar"] .stButton > button {
+  min-height: 1.78rem !important;
+  height: auto !important;
+  padding: .20rem .48rem !important;
+  border-radius: 8px !important;
+  font-size: .77rem !important;
+  line-height: 1.12 !important;
+  font-weight: 650 !important;
+  white-space: normal !important;
+  text-align: left !important;
+  justify-content: flex-start !important;
+  margin: 0 !important;
+  transform: none !important;
+}
+[data-testid="stSidebar"] .stButton > button p {
+  font-size: .77rem !important;
+  line-height: 1.12 !important;
+  margin: 0 !important;
+}
+
 </style>
 """

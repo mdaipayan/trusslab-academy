@@ -30,7 +30,7 @@ def render_glossary() -> None:
             st.markdown(f"#### {heading}")
             st.dataframe(
                 pd.DataFrame(rows, columns=("Symbol / abbreviation", "Meaning", "How to read it in this app")),
-                use_container_width=True,
+                width="stretch",
                 hide_index=True,
             )
 
@@ -84,7 +84,7 @@ def _render_block(block: ContentBlock) -> None:
         st.markdown(f'<div class="callout callout-{tone}">{heading}{_render_callout_text(block.text)}</div>', unsafe_allow_html=True)
     elif block.kind == "table":
         df = pd.DataFrame(block.table_rows, columns=block.table_headers)
-        st.dataframe(df, use_container_width=True, hide_index=True)
+        st.dataframe(df, width="stretch", hide_index=True)
 
 
 def render_lesson_blocks(module: LessonModule) -> None:
@@ -137,7 +137,7 @@ def render_quiz(module: LessonModule, learning: LearningService, progress: Progr
             )
             with st.expander(f"Hint for question {index}"):
                 st.write(question.hint)
-        submitted = st.form_submit_button("Check answers", type="primary", use_container_width=True)
+        submitted = st.form_submit_button("Check answers", type="primary", width="stretch")
     if submitted:
         answers: dict[str, str | None] = {
             question.id: st.session_state.get(f"answer_{module.id}_{attempt}_{question.id}")
@@ -156,7 +156,7 @@ def render_quiz(module: LessonModule, learning: LearningService, progress: Progr
     if result:
         _render_result(module, result)
         if not result["passed"]:
-            if st.button("Try the quiz again", key=f"retry_{module.id}_{attempt}", use_container_width=True):
+            if st.button("Try the quiz again", key=f"retry_{module.id}_{attempt}", width="stretch"):
                 progress.clear_latest_result(module.id)
                 st.session_state[f"quiz_attempt_{module.id}"] = attempt + 1
                 st.rerun()
