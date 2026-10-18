@@ -18,21 +18,26 @@ def inject_theme() -> None:
 
 
 
-def render_glossary() -> None:
-    """Render the shared student reference for engineering symbols and abbreviations."""
-    with st.expander("Symbols & abbreviations used in this app", expanded=False):
-        st.markdown(
-            "Member axial force is denoted by **F** throughout TrussLab Academy. "
-            "The symbol **N** is used only as the unit newton where units are shown. "
-            "For member forces, positive means tension and negative means compression under the stated sign convention."
+def render_abbreviations_page() -> None:
+    """Render the standalone reference page for engineering symbols and abbreviations."""
+    st.markdown('<div class="module-kicker">REFERENCE PAGE</div>', unsafe_allow_html=True)
+    st.title("Abbreviations & symbols")
+    st.markdown(
+        "A quick reference for the notation used throughout TrussLab Academy. "
+        "This page is separate from the lessons so it can grow as new app features are added."
+    )
+    st.info(
+        "**Member force:** use **F** for axial member force. "
+        "**N** is the unit newton, not the member-force symbol. "
+        "With the sign convention used here, positive force means tension and negative force means compression."
+    )
+    for heading, rows in GLOSSARY:
+        st.markdown(f"### {heading}")
+        st.dataframe(
+            pd.DataFrame(rows, columns=("Symbol / abbreviation", "Meaning", "How to read it in this app")),
+            width="stretch",
+            hide_index=True,
         )
-        for heading, rows in GLOSSARY:
-            st.markdown(f"#### {heading}")
-            st.dataframe(
-                pd.DataFrame(rows, columns=("Symbol / abbreviation", "Meaning", "How to read it in this app")),
-                width="stretch",
-                hide_index=True,
-            )
 
 
 def render_objectives(module: LessonModule, progress: ProgressService) -> None:

@@ -3,7 +3,7 @@ import tomllib
 from pathlib import Path
 
 from trusslab.domain.catalog import get_modules
-from trusslab.ui.navigation import NAV_GROUPS, NAV_LABELS, navigation_groups, navigation_label
+from trusslab.ui.navigation import NAV_GROUPS, NAV_LABELS, SIDEBAR_PAGES, navigation_groups, navigation_label
 
 
 class SidebarNavigationTests(unittest.TestCase):
@@ -92,6 +92,23 @@ class SidebarNavigationTests(unittest.TestCase):
         self.assertNotIn("st.write(question.hint)", components)
         self.assertIn("Check answers", components)
         self.assertIn("learning.evaluate(module, answers)", components)
+
+
+    def test_abbreviations_is_a_separate_sidebar_page_not_a_lesson(self):
+        page_ids = tuple(page_id for page_id, _ in SIDEBAR_PAGES)
+        module_ids = tuple(module.id for module in get_modules())
+        self.assertIn(("glossary", "Abbreviations & symbols"), SIDEBAR_PAGES)
+        self.assertNotIn("glossary", module_ids)
+
+        root = Path(__file__).parents[1]
+        app_source = (root / "app.py").read_text(encoding="utf-8")
+        component_source = (root / "trusslab" / "ui" / "components.py").read_text(encoding="utf-8")
+        self.assertIn('"glossary": render_abbreviations_page', app_source)
+        self.assertIn('active_page, selected_id = _render_sidebar()', app_source)
+        self.assertIn('for page_id, page_label in SIDEBAR_PAGES:', app_source)
+        self.assertIn('st.title("Abbreviations & symbols")', component_source)
+        self.assertNotIn('with st.expander("Symbols & abbreviations used in this app"', component_source)
+        self.assertIn('This page is separate from the lessons', component_source)
 
 
 if __name__ == "__main__":

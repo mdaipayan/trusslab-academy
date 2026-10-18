@@ -26,6 +26,12 @@ NAV_GROUPS: Final[tuple[tuple[str, tuple[str, ...]], ...]] = (
     ("DESIGN", ("optimization",)),
 )
 
+# Standalone reference pages are separate from the lesson sequence. Add future
+# destinations (for example, an "App scope" page) here when their content is ready.
+SIDEBAR_PAGES: Final[tuple[tuple[str, str], ...]] = (
+    ("glossary", "Abbreviations & symbols"),
+)
+
 
 def navigation_groups(module_ids: tuple[str, ...]) -> tuple[tuple[str, tuple[str, ...]], ...]:
     """Return valid groups in course order, including any ungrouped future modules."""

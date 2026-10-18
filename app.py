@@ -8,10 +8,10 @@ import streamlit as st
 from trusslab.domain.catalog import get_modules
 from trusslab.domain.models import LessonModule
 from trusslab.services.learning import LearningService, ProgressService
-from trusslab.ui.components import inject_theme, render_glossary, render_lesson_blocks, render_objectives, render_quiz
+from trusslab.ui.components import inject_theme, render_abbreviations_page, render_lesson_blocks, render_objectives, render_quiz
 from trusslab.ui.diagrams import DiagramFactory
 from trusslab.ui.experiments import ExperimentRenderer
-from trusslab.ui.navigation import navigation_groups, navigation_label
+from trusslab.ui.navigation import SIDEBAR_PAGES, navigation_groups, navigation_label
 
 st.set_page_config(page_title="TrussLab Academy", page_icon="🔺", layout="wide", initial_sidebar_state="expanded")
 
@@ -34,9 +34,15 @@ FREE_BODY_TITLES = {
 def _navigate(module_id: str) -> None:
     """Select a lesson from the sidebar or Previous/Next controls."""
     st.session_state["active_module_id"] = module_id
+    st.session_state["active_page"] = "lesson"
 
 
-def _render_sidebar() -> str:
+def _navigate_page(page_id: str) -> None:
+    """Open a standalone reference page selected from the sidebar."""
+    st.session_state["active_page"] = page_id
+
+
+def _render_sidebar() -> tuple[str, str]:
     st.sidebar.markdown(
         '<div class="academy-brand">'
         '<div class="academy-eyebrow">CIVIL ENGINEERING · LEARN</div>'
@@ -61,6 +67,11 @@ def _render_sidebar() -> str:
 
     module_by_id = {module.id: module for module in MODULES}
     module_ids = tuple(module.id for module in MODULES)
+    valid_page_ids = {page_id for page_id, _ in SIDEBAR_PAGES}
+    active_page = st.session_state.get("active_page", "lesson")
+    if active_page != "lesson" and active_page not in valid_page_ids:
+        active_page = "lesson"
+    st.session_state["active_page"] = active_page
     selected_id = st.session_state.get("active_module_id", MODULES[0].id)
     if selected_id not in module_by_id:
         selected_id = MODULES[0].id
@@ -93,7 +104,21 @@ def _render_sidebar() -> str:
                 help=f"Module {index} of {len(MODULES)} · {module.title}",
             )
 
-    return selected_id
+    if SIDEBAR_PAGES:
+        st.sidebar.divider()
+        st.sidebar.markdown('<div class="sidebar-nav-group">REFERENCE</div>', unsafe_allow_html=True)
+        for page_id, page_label in SIDEBAR_PAGES:
+            st.sidebar.button(
+                page_label,
+                key=f"page_{page_id}",
+                type="primary" if active_page == page_id else "secondary",
+                width="stretch",
+                on_click=_navigate_page,
+                args=(page_id,),
+                help=f"Open the {page_label.lower()} reference page",
+            )
+
+    return active_page, selected_id
 
 
 def _render_free_body_diagrams(module: LessonModule) -> None:
@@ -196,12 +221,23 @@ def _render_module(module: LessonModule, index: int) -> None:
             st.button("End of learning path", key="next_end", disabled=True, width="stretch")
 
 
+PAGE_RENDERERS = {
+    "glossary": render_abbreviations_page,
+}
+
+
 def main() -> None:
     inject_theme()
-    selected_id = _render_sidebar()
-    index = next(i for i, module in enumerate(MODULES) if module.id == selected_id)
-    _render_module(MODULES[index], index)
-    render_glossary()
+    active_page, selected_id = _render_sidebar()
+    if active_page == "lesson":
+        index = next(i for i, module in enumerate(MODULES) if module.id == selected_id)
+        _render_module(MODULES[index], index)
+    else:
+        renderer = PAGE_RENDERERS.get(active_page)
+        if renderer is None:
+            st.error("This page is not available yet.")
+        else:
+            renderer()
     st.markdown("<div class='muted' style='text-align:center;margin-top:1rem'>TrussLab Academy · Educational use only · Structural design certification is outside this app's scope.</div>", unsafe_allow_html=True)
 
 
