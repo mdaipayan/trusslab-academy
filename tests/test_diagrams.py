@@ -62,7 +62,7 @@ class DiagramTests(unittest.TestCase):
 
     def test_joint_fbd_uses_semantic_color_groups_and_force_labels(self):
         figure = DiagramFactory.build_free_body("joint_c_fbd")
-        colors = [trace.line.color for trace in figure.data if getattr(trace, "line", None)]
+        colors = [annotation.arrowcolor for annotation in (figure.layout.annotations or []) if getattr(annotation, "arrowcolor", None)]
         self.assertIn("#d18b14", colors)  # applied load
         self.assertIn("#16845a", colors)  # assumed tension
         labels = [str(annotation.text) for annotation in (figure.layout.annotations or [])]
