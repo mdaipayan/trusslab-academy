@@ -86,6 +86,13 @@ def render_quiz(module: LessonModule, learning: LearningService, progress: Progr
         'Answer all three correctly to mark this objective as achieved. You can retry after reviewing the feedback.</div>',
         unsafe_allow_html=True,
     )
+    attempt_count = progress.attempt_count(module.id)
+    best_score = progress.best_score(module.id)
+    if attempt_count:
+        st.caption(f"Attempts this session: {attempt_count} · Best score: {best_score}/{len(module.quiz)}")
+    else:
+        st.caption("No attempts yet in this session.")
+
     if progress.is_mastered(module.id):
         result = progress.result(module.id)
         st.markdown(
