@@ -11,7 +11,7 @@ NAV_LABELS: Final[dict[str, str]] = {
     "determinacy": "Determinacy",
     "joints": "Method of joints",
     "sections": "Method of sections",
-    "determinate-example": "3–4–5 worked example",
+    "determinate-example": "Worked 3–4–5 truss",
     "truss-compatibility": "Truss compatibility",
     "indeterminate-triangle": "Redundant reaction",
     "force-method": "Force method",
