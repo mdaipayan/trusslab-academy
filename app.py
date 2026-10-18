@@ -8,7 +8,7 @@ import streamlit as st
 from trusslab.domain.catalog import get_modules
 from trusslab.domain.models import LessonModule
 from trusslab.services.learning import LearningService, ProgressService
-from trusslab.ui.components import inject_theme, render_glossary, render_lesson_blocks, render_objectives, render_quiz
+from trusslab.ui.components import inject_theme, render_abbreviations_page, render_lesson_blocks, render_objectives, render_quiz
 from trusslab.ui.diagrams import DiagramFactory
 from trusslab.ui.experiments import ExperimentRenderer
 from trusslab.ui.navigation import SIDEBAR_PAGES, navigation_groups, navigation_label
@@ -222,7 +222,7 @@ def _render_module(module: LessonModule, index: int) -> None:
 
 
 PAGE_RENDERERS = {
-    "glossary": render_glossary,
+    "glossary": render_abbreviations_page,
 }
 
 
