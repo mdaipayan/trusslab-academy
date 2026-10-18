@@ -27,6 +27,18 @@ class DiagramTests(unittest.TestCase):
         self.assertTrue(any("joint c" in text.lower() for text in annotations))
         self.assertTrue(any("redundant reaction" in text.lower() for text in annotations))
         self.assertTrue(any(shape.type == "line" for shape in (figure.layout.shapes or [])), "The horizontal guide at C should be drawn.")
+        # Important labels must be visible by default, not only on hover.
+        visible_text = [str(item.text) for item in (figure.layout.annotations or [])]
+        for label in ("AB · 4 m", "AC · 3 m", "BC · 5 m", "P = 10 kN ↓", "R = Cₓ"):
+            self.assertTrue(any(label in text for text in visible_text), f"Missing visible annotation: {label}")
+        label_annotations = [
+            item for item in (figure.layout.annotations or [])
+            if any(label in str(item.text) for label in ("AB · 4 m", "AC · 3 m", "BC · 5 m"))
+        ]
+        self.assertEqual(len(label_annotations), 3)
+        self.assertTrue(all(item.bgcolor for item in label_annotations), "Member labels should have opaque backgrounds for contrast.")
+        joint_trace = next(trace for trace in figure.data if trace.name == "Joints")
+        self.assertEqual(list(joint_trace.textposition), ["top left", "top center", "top left"])
 
 
 if __name__ == "__main__":
