@@ -20,12 +20,15 @@ def solve_indeterminate_triangle_areas(areas_mm2: tuple[float, float, float]) ->
     if denominator <= 0 or not isfinite(denominator):
         raise ValueError("The flexibility denominator must be finite and positive.")
     reaction = -numerator / denominator
-    return {
+    result = {
         "R": reaction,
         "F_AB": 20.0 + reaction,
         "F_AC": 0.75 * reaction - 5.0,
         "F_BC": -1.25 * (20.0 + reaction),
     }
+    if not all(isfinite(value) for value in result.values()):
+        raise ValueError("The selected areas exceed the supported numeric range; use realistic positive areas in mm².")
+    return result
 
 
 
@@ -50,13 +53,17 @@ def solve_vertical_load_truss_compatibility(areas_mm2: tuple[float, float, float
     if denominator <= 0 or not isfinite(denominator):
         raise ValueError("The flexibility denominator must be finite and positive.")
     reaction = -numerator / denominator
-    return {
+    result = {
         "R": reaction,
         "F_AB": reaction,
         "F_AC": -10.0 + 0.75 * reaction,
         "F_BC": -1.25 * reaction,
         "compatibility_terms": {"numerator": numerator, "denominator": denominator},
     }
+    numeric_outputs = [reaction, result["F_AB"], result["F_AC"], result["F_BC"], numerator, denominator]
+    if not all(isfinite(value) for value in numeric_outputs):
+        raise ValueError("The selected areas exceed the supported numeric range; use realistic positive areas in mm².")
+    return result
 
 
 def single_member_sizing(area_mm2: float, load_kn: float, length_m: float,
@@ -73,6 +80,8 @@ def single_member_sizing(area_mm2: float, load_kn: float, length_m: float,
     stress = load_kn * 1000.0 / area_mm2  # kN -> N; N/mm² = MPa
     volume_m3 = area_mm2 * 1e-6 * length_m
     mass_kg = density_kg_m3 * volume_m3
+    if not all(isfinite(value) for value in (stress, volume_m3, mass_kg)):
+        raise ValueError("The inputs exceed the supported numeric range; use realistic engineering values and consistent units.")
     return {
         "stress_mpa": stress,
         "volume_m3": volume_m3,

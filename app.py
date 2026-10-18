@@ -1,6 +1,8 @@
 """TrussLab Academy — objective-led structural engineering lessons."""
 from __future__ import annotations
 
+from html import escape
+
 import streamlit as st
 
 from trusslab.domain.catalog import get_modules
@@ -34,14 +36,14 @@ def _render_sidebar() -> str:
     st.sidebar.markdown("<div style='font-size:.72rem;letter-spacing:.1em;font-weight:800;color:#9eb4c0;text-transform:uppercase'>Your progress</div>", unsafe_allow_html=True)
     st.sidebar.markdown(f"<div style='font-size:1.75rem;font-weight:850;color:#fff;margin:.12rem 0'>{completed}<span style='font-size:.95rem;color:#9eb4c0'> / {len(MODULES)} modules</span></div>", unsafe_allow_html=True)
     st.sidebar.progress(percent / 100)
-    st.sidebar.caption(f"{percent}% mastery achieved · Best score saved per module")
+    st.sidebar.caption(f"{percent}% mastered · Scores and attempts last for this session")
     st.sidebar.divider()
 
     module_by_id = {module.id: module for module in MODULES}
     def format_module(module_id: str) -> str:
         module = module_by_id[module_id]
         status = "✓" if PROGRESS.is_mastered(module_id) else "○"
-        return f"{status}  {module.title}"
+        return f"{status}  {escape(module.title)}"
 
     selected_id = st.sidebar.radio(
         "YOUR LEARNING PATH", options=[module.id for module in MODULES], index=0,
@@ -69,18 +71,19 @@ def _render_header() -> None:
 
 def _render_module(module: LessonModule, index: int) -> None:
     done = PROGRESS.is_mastered(module.id)
-    result = PROGRESS.result(module.id)
     score = PROGRESS.best_score(module.id)
     status = "MASTERED" if done else "IN PROGRESS"
+    status_class = "pill--success" if done else "pill--neutral"
     st.markdown(f'<div class="module-kicker">MODULE {index + 1:02d} / {len(MODULES):02d} · {module.level}</div>', unsafe_allow_html=True)
     st.markdown(f'<h1 class="module-title">{module.title}</h1>', unsafe_allow_html=True)
-    st.markdown(f'<div class="module-subtitle">{module.subtitle}</div>', unsafe_allow_html=True)
-    chips = f'<span class="pill">{module.minutes} MIN</span>&nbsp;&nbsp;<span class="pill">{status}</span>'
+    st.markdown(f'<div class="module-subtitle">{escape(module.subtitle)}</div>', unsafe_allow_html=True)
+    chips = f'<span class="pill">{module.minutes} MIN</span>&nbsp;&nbsp;<span class="pill {status_class}">{status}</span>'
     if score is not None:
         chips += f'&nbsp;&nbsp;<span class="pill">BEST {score}/{len(module.quiz)}</span>'
     st.markdown(chips, unsafe_allow_html=True)
     st.markdown("<div style='height:.7rem'></div>", unsafe_allow_html=True)
-    st.markdown(f'<div class="content-body">{module.purpose}</div>', unsafe_allow_html=True)
+    st.markdown(f'<div class="content-body">{escape(module.purpose)}</div>', unsafe_allow_html=True)
+    st.progress((index + 1) / len(MODULES), text=f"Learning path · module {index + 1} of {len(MODULES)}")
     render_objectives(module, PROGRESS)
 
     left, right = st.columns([1.15, .95], gap="large")

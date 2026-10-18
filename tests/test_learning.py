@@ -80,6 +80,8 @@ class EngineeringCalculationTests(unittest.TestCase):
             solve_indeterminate_triangle_areas((1000, -1000, 1000))
         with self.assertRaises(ValueError):
             single_member_sizing(0, 100, 2.5, 150)
+        with self.assertRaises(ValueError):
+            single_member_sizing(1e-300, 1e308, 1.0, 1.0)
 
 
 if __name__ == "__main__":

@@ -86,5 +86,18 @@ hr { border-color: var(--line); }
   .stButton > button { width:100%; }
 }
 @media (prefers-reduced-motion: reduce) { * { transition:none !important; } }
+
+/* Keyboard accessibility and compact-screen polish */
+:focus-visible { outline: 3px solid #f0b429 !important; outline-offset: 3px !important; border-radius: 5px; }
+.stProgress > div > div { border-radius: 999px; }
+[data-testid="stCaptionContainer"] { line-height: 1.55; }
+[data-testid="stRadio"] [role="radiogroup"] { gap: .42rem; }
+[data-testid="stRadio"] [role="radio"] { align-items: flex-start; line-height: 1.45; }
+[data-testid="stDataFrame"] { background: #fff; }
+[data-testid="stPlotlyChart"] { border-radius: 14px; overflow: hidden; }
+.stAlert { border-radius: 12px; }
+.pill--success { background: var(--success-soft); color: #145e3d; }
+.pill--neutral { background: #e9eef2; color: #40586a; }
+@media (max-width: 520px) { .hero-title { font-size: 1.65rem; } .module-title { font-size: 1.55rem; overflow-wrap: anywhere; } [data-testid="stMetric"] { padding: .65rem .7rem; } [data-testid="stMetricValue"] { font-size: 1.25rem; } .quiz-question { padding: .75rem .8rem .35rem; } }
 </style>
 """
