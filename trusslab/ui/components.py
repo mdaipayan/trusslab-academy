@@ -49,6 +49,20 @@ def render_objectives(module: LessonModule, progress: ProgressService) -> None:
     )
 
 
+def _render_callout_text(text: str) -> str:
+    """Escape lesson text and preserve simple **bold** emphasis in HTML callouts."""
+    import re
+
+    parts: list[str] = []
+    cursor = 0
+    for match in re.finditer(r"\*\*(.+?)\*\*", text):
+        parts.append(escape(text[cursor:match.start()]))
+        parts.append(f"<strong>{escape(match.group(1))}</strong>")
+        cursor = match.end()
+    parts.append(escape(text[cursor:]))
+    return "".join(parts).replace("\\n", "<br>")
+
+
 def _render_block(block: ContentBlock) -> None:
     if block.heading:
         st.markdown(f'<div class="content-heading">{escape(block.heading)}</div>', unsafe_allow_html=True)
@@ -67,7 +81,7 @@ def _render_block(block: ContentBlock) -> None:
     elif block.kind == "callout":
         tone = block.tone if block.tone in {"info", "success", "warning", "danger", "highlight"} else "info"
         heading = f'<div class="callout-title">{escape(block.heading)}</div>' if block.heading else ""
-        st.markdown(f'<div class="callout callout-{tone}">{heading}{block.text}</div>', unsafe_allow_html=True)
+        st.markdown(f'<div class="callout callout-{tone}">{heading}{_render_callout_text(block.text)}</div>', unsafe_allow_html=True)
     elif block.kind == "table":
         df = pd.DataFrame(block.table_rows, columns=block.table_headers)
         st.dataframe(df, use_container_width=True, hide_index=True)
