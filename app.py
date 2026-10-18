@@ -96,22 +96,6 @@ def _render_sidebar() -> str:
     return selected_id
 
 
-def _render_header() -> None:
-    total = len(MODULES)
-    complete = PROGRESS.mastered_count()
-    st.markdown(
-        '<div class="hero-panel"><div class="hero-eyebrow">A guided structural learning path</div>'
-        '<div class="hero-title">Learn the behaviour, not just the formula.</div>'
-        '<p class="hero-copy">Short lessons. Clear diagrams. Small experiments. A quiz at the end of every module so you know when the objective is achieved.</p></div>',
-        unsafe_allow_html=True,
-    )
-    a, b, c = st.columns(3)
-    a.metric("Modules mastered", f"{complete} / {total}")
-    b.metric("Total study time", f"~{sum(module.minutes for module in MODULES)} min")
-    c.metric("Quizzes per module", "3 questions", "All 3 correct = mastery")
-
-
-
 def _render_free_body_diagrams(module: LessonModule) -> None:
     """Show extra FBDs as a separate visual teaching aid."""
     if not module.free_body_ids:
@@ -215,7 +199,6 @@ def _render_module(module: LessonModule, index: int) -> None:
 def main() -> None:
     inject_theme()
     selected_id = _render_sidebar()
-    _render_header()
     index = next(i for i, module in enumerate(MODULES) if module.id == selected_id)
     _render_module(MODULES[index], index)
     render_glossary()
