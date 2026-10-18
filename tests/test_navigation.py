@@ -1,4 +1,5 @@
 import unittest
+import tomllib
 from pathlib import Path
 
 from trusslab.domain.catalog import get_modules
@@ -45,6 +46,21 @@ class SidebarNavigationTests(unittest.TestCase):
             with self.subTest(path=relative_path):
                 source = (root / relative_path).read_text(encoding="utf-8")
                 self.assertNotIn("use_container_width", source)
+
+
+    def test_sidebar_uses_native_dark_theme_and_accessible_button_selectors(self):
+        root = Path(__file__).parents[1]
+        config = tomllib.loads((root / ".streamlit" / "config.toml").read_text(encoding="utf-8"))
+        sidebar = config["theme"]["sidebar"]
+        self.assertEqual(sidebar["backgroundColor"], "#152535")
+        self.assertEqual(sidebar["secondaryBackgroundColor"], "#1B3040")
+        self.assertEqual(sidebar["textColor"], "#EDF5F7")
+        self.assertEqual(sidebar["primaryColor"], "#48C7B6")
+
+        theme_css = (root / "trusslab" / "ui" / "theme.py").read_text(encoding="utf-8")
+        self.assertIn('button[data-testid="stBaseButton-secondary"]', theme_css)
+        self.assertIn('button[data-testid="stBaseButton-primary"]', theme_css)
+        self.assertNotIn('button[kind="secondary"]', theme_css)
 
 
 if __name__ == "__main__":
