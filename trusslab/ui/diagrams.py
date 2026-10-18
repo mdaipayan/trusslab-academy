@@ -246,7 +246,8 @@ class DiagramFactory:
         cls._nodes(fig, nodes, label_positions={"A": "bottom left", "B": "bottom center", "C": "top left"})
         cls._arrow(fig, (0, 0), (0, .9), "Aᵧ = 10 kN", cls.BLUE, (.54, .48))
         fig.add_annotation(x=4.48, y=.38, text="Bᵧ = 0", showarrow=False, bgcolor="rgba(255,255,255,.96)", font={"size": 11, "color": cls.BLUE})
-        cls._arrow(fig, (0, 3), (0, 2.12), "P = 10 kN ↓", cls.AMBER, (.58, 2.55))
+        cls._arrow(fig, (.14, 3.9), (.14, 3.12), "P = 10 kN ↓", cls.AMBER, (.82, 3.55))
+        fig.add_shape(type="line", x0=0, y0=3, x1=.14, y1=3, line={"color": cls.SLATE, "width": 1, "dash": "dot"})
         fig.add_annotation(x=.22, y=2.55, ax=.10, ay=2.95, xref="x", yref="y", axref="x", ayref="y",
                            text="", showarrow=True, arrowhead=3, arrowsize=1,
                            arrowwidth=1.8, arrowcolor=cls.BLUE, standoff=1)
@@ -301,7 +302,8 @@ class DiagramFactory:
                                  textposition="top left", marker={"size": 15, "color": cls.TEAL},
                                  textfont={"size": 14, "color": cls.INK}, showlegend=False))
         cls._arrow(fig, (0, 0), (1.15, 0), "Pₓ = 20 kN", cls.AMBER, (.65, .29))
-        cls._arrow(fig, (0, 0), (0, -.95), "Pᵧ = 20 kN", cls.AMBER, (.62, -.68))
+        cls._arrow(fig, (.13, 0), (.13, -.95), "Pᵧ = 20 kN", cls.AMBER, (.88, -.68))
+        fig.add_shape(type="line", x0=0, y0=0, x1=.13, y1=0, line={"color": cls.SLATE, "width": 1, "dash": "dot"})
         cls._arrow(fig, (0, 0), (.96, -.72), "F_BC", cls.GREEN, (1.12, -.42))
         cls._arrow(fig, (-.13, -.02), (-.13, -.92), "F_AC · assumed tension", cls.GREEN, (-1.02, -.63))
         fig.add_shape(type="line", x0=0, y0=0, x1=-.13, y1=0, line={"color": cls.SLATE, "width": 1, "dash": "dot"})
@@ -324,7 +326,8 @@ class DiagramFactory:
         cls._supports(fig, nodes, ("A",))
         cls._roller_b(fig)
         cls._nodes(fig, nodes)
-        cls._arrow(fig, (4, 4.0), (4, 3.15), "P = 10 kN ↓", cls.AMBER, (4.55, 3.66))
+        cls._arrow(fig, (4.16, 3.92), (4.16, 3.15), "P = 10 kN ↓", cls.AMBER, (4.69, 3.62))
+        fig.add_shape(type="line", x0=4, y0=3, x1=4.16, y1=3, line={"color": cls.SLATE, "width": 1, "dash": "dot"})
         fig.add_annotation(x=2.0, y=1.38, text="<b>Primary structure</b><br>BD is removed temporarily.<br>Red dashed line = released member.",
                            showarrow=False, bgcolor="#fff0f0", bordercolor="#f3bcc3",
                            borderwidth=1, borderpad=8, font={"size": 12, "color": "#8d1f2a"})
