@@ -11,7 +11,7 @@ from trusslab.services.learning import LearningService, ProgressService
 from trusslab.ui.components import inject_theme, render_glossary, render_lesson_blocks, render_objectives, render_quiz
 from trusslab.ui.diagrams import DiagramFactory
 from trusslab.ui.experiments import ExperimentRenderer
-from trusslab.ui.navigation import NAV_LABELS, navigation_groups
+from trusslab.ui.navigation import navigation_groups, navigation_label
 
 st.set_page_config(page_title="TrussLab Academy", page_icon="🔺", layout="wide", initial_sidebar_state="expanded")
 
@@ -41,7 +41,7 @@ def _render_sidebar() -> str:
         '<div class="academy-brand">'
         '<div class="academy-eyebrow">CIVIL ENGINEERING · LEARN</div>'
         '<div class="academy-brand-title">TrussLab <span>Academy</span></div>'
-        '<div class="academy-brand-copy">Understand the behaviour. Then solve the structure.</div>'
+        '<div class="academy-brand-copy">Learn trusses · Solve step by step</div>'
         '</div>',
         unsafe_allow_html=True,
     )
@@ -57,7 +57,6 @@ def _render_sidebar() -> str:
         unsafe_allow_html=True,
     )
     st.sidebar.progress(percent / 100)
-    st.sidebar.caption("Mastery is saved for this session.")
     st.sidebar.divider()
 
     module_by_id = {module.id: module for module in MODULES}
@@ -83,8 +82,7 @@ def _render_sidebar() -> str:
             module = module_by_id[module_id]
             index = module_ids.index(module_id) + 1
             mastered = PROGRESS.is_mastered(module_id)
-            marker = "✓" if mastered else f"{index:02d}"
-            label = f"{marker}   {NAV_LABELS.get(module_id, module.title)}"
+            label = navigation_label(module_id, mastered)
             st.sidebar.button(
                 label,
                 key=f"nav_{module_id}",
@@ -95,12 +93,6 @@ def _render_sidebar() -> str:
                 help=f"Module {index} of {len(MODULES)} · {module.title}",
             )
 
-    st.sidebar.divider()
-    st.sidebar.markdown(
-        '<div class="sidebar-footer-note">Choose a lesson above. Each lesson ends with a '
-        '<strong>3-question quiz</strong>; score 3/3 to achieve mastery.</div>',
-        unsafe_allow_html=True,
-    )
     return selected_id
 
 
