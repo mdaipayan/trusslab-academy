@@ -52,11 +52,19 @@ class DiagramFactory:
         ))
 
     @classmethod
-    def _nodes(cls, fig: go.Figure, nodes: Mapping[str, Point], highlight: str | None = None) -> None:
+    def _nodes(
+        cls,
+        fig: go.Figure,
+        nodes: Mapping[str, Point],
+        highlight: str | None = None,
+        label_positions: Mapping[str, str] | None = None,
+    ) -> None:
         names = list(nodes)
+        positions = label_positions or {}
         fig.add_trace(go.Scatter(
             x=[nodes[n][0] for n in names], y=[nodes[n][1] for n in names],
-            mode="markers+text", text=names, textposition="top center",
+            mode="markers+text", text=names,
+            textposition=[positions.get(name, "top center") for name in names],
             textfont={"size": 12, "color": "#173042"},
             marker={"size": [14 if n == highlight else 10 for n in names],
                     "color": [cls.AMBER if n == highlight else cls.TEAL for n in names],
@@ -250,7 +258,7 @@ class DiagramFactory:
 
     @classmethod
     def truss_compatibility(cls) -> go.Figure:
-        """A three-member pin-jointed truss with a horizontal redundant at C."""
+        """A three-member pin-jointed truss with legible visible labels."""
         nodes = {"A": (0, 0), "B": (4, 0), "C": (0, 3)}
         fig = go.Figure()
         for a, b, label in (("A", "B", "AB · 4 m"), ("A", "C", "AC · 3 m"), ("B", "C", "BC · 5 m")):
@@ -267,8 +275,7 @@ class DiagramFactory:
         for xx in (3.63, 3.83, 4.03, 4.23, 4.43):
             fig.add_shape(type="line", x0=xx, x1=xx - 0.08, y0=-0.32, y1=-0.41,
                           line={"color": "#9caeb9", "width": 1})
-        # A vertical guide with rollers at C restrains horizontal translation while
-        # permitting vertical movement. It is a support at the truss joint C.
+        # Horizontal guide restrains translation at C; the horizontal reaction is redundant.
         fig.add_shape(type="line", x0=-0.66, x1=-0.66, y0=2.25, y1=3.75,
                       line={"color": cls.SLATE, "width": 3})
         for yy in (2.56, 3.15):
@@ -277,17 +284,34 @@ class DiagramFactory:
         fig.add_trace(go.Scatter(x=[-0.34, 0], y=[3, 3], mode="lines",
                                  line={"color": cls.SLATE, "width": 2},
                                  hoverinfo="skip", showlegend=False, name="Horizontal guide connection"))
-        cls._nodes(fig, nodes, highlight="C")
-        cls._arrow(fig, (0.0, 4.05), (0.0, 3.0), "P = 10 kN ↓", cls.AMBER, (0.70, 3.83))
-        cls._arrow(fig, (-0.90, 2.70), (-0.02, 2.70), "R = Cₓ", cls.BLUE, (-0.48, 2.98))
-        fig.add_annotation(x=2.1, y=1.45, text="3 members · 3 joints<br><b>one redundant reaction</b>",
-                           showarrow=False, bgcolor="#fff5d8", bordercolor="#f3c969", borderpad=6,
-                           font={"size": 11, "color": "#744900"})
+
+        # Individually positioned joint labels stop the C/load/reaction labels colliding.
+        cls._nodes(fig, nodes, highlight="C", label_positions={
+            "A": "top left", "B": "top center", "C": "top left"
+        })
+        cls._arrow(fig, (0.0, 4.05), (0.0, 3.0), "P = 10 kN ↓", cls.AMBER, (0.68, 3.88))
+        cls._arrow(fig, (-1.20, 2.70), (-0.02, 2.70), "R = Cₓ", cls.BLUE, (-1.18, 3.18))
+
+        # Make member geometry and lengths readable without relying on hover.
+        member_label_style = {
+            "showarrow": False,
+            "font": {"size": 12, "color": "#173042"},
+            "bgcolor": "rgba(255,255,255,0.97)",
+            "bordercolor": "#d8e2e8",
+            "borderwidth": 1,
+            "borderpad": 4,
+        }
+        fig.add_annotation(x=2.0, y=0.22, text="<b>AB · 4 m</b>", **member_label_style)
+        fig.add_annotation(x=0.34, y=1.48, text="<b>AC · 3 m</b>", **member_label_style)
+        fig.add_annotation(x=2.55, y=1.72, text="<b>BC · 5 m</b>", **member_label_style)
+        fig.add_annotation(x=2.72, y=2.58, text="3 members · 3 joints<br><b>one redundant reaction</b>",
+                           showarrow=False, bgcolor="#fff5d8", bordercolor="#e9bd53", borderwidth=1,
+                           borderpad=6, font={"size": 12, "color": "#5d4100"})
         fig.add_annotation(x=1.95, y=-0.67, text="Ideal truss: point load is applied at joint C",
-                           showarrow=False, font={"size": 10, "color": cls.TEAL},
-                           bgcolor="rgba(255,255,255,0.93)")
-        return cls._base(fig, "Pin-jointed truss with a redundant horizontal support", 410,
-                         (-1.35, 5.0), (-1.0, 4.45), equal_scale=False)
+                           showarrow=False, font={"size": 11, "color": "#08756d"},
+                           bgcolor="rgba(255,255,255,0.97)", bordercolor="#d8e2e8", borderwidth=1, borderpad=3)
+        return cls._base(fig, "Pin-jointed truss with a redundant horizontal support", 440,
+                         (-1.70, 5.0), (-1.0, 4.55), equal_scale=False)
 
     @classmethod
     def indeterminate_triangle(cls) -> go.Figure:
