@@ -125,10 +125,32 @@ hr { border-color: var(--line); }
 [data-testid="stSidebar"] .sidebar-progress-percent { margin-left:auto; color:#75d8cc; font-size:.8rem; font-weight:850; }
 [data-testid="stSidebar"] [data-testid="stProgressBar"] { margin:.08rem 0 .06rem !important; }
 [data-testid="stSidebar"] hr { border-color:#344958; margin:.34rem 0 !important; }
-[data-testid="stSidebar"] .sidebar-nav-title { display:block; color:#ffffff; font-size:.75rem; font-weight:900; letter-spacing:.09em; line-height:1.35; padding:.12rem 0 .2rem; margin:.12rem 0 .14rem !important; }
-[data-testid="stSidebar"] .sidebar-nav-group { display:flex; justify-content:space-between; align-items:center; min-height:.85rem; padding:.18rem .1rem .08rem !important; margin:.20rem 0 .12rem !important; color:#9bb4c1; font-size:.60rem; font-weight:900; letter-spacing:.11em; line-height:1.25; }
-[data-testid="stSidebar"] .sidebar-nav-group-count { color:#7896a5; letter-spacing:0; font-size:.63rem; }
-[data-testid="stSidebar"] [data-testid="stVerticalBlock"] { gap:.42rem !important; }
+[data-testid="stSidebar"] .sidebar-nav-title {
+  display:block; color:#ffffff; font-size:.75rem; font-weight:900;
+  letter-spacing:.09em; line-height:1.4; padding:.2rem 0 .32rem;
+  margin:.22rem 0 .32rem !important;
+}
+[data-testid="stSidebar"] .sidebar-nav-group {
+  display:flex; justify-content:space-between; align-items:center;
+  min-height:1.12rem; padding:.32rem .1rem .14rem !important;
+  margin:.42rem 0 .22rem !important; color:#a9c0cb;
+  font-size:.61rem; font-weight:900; letter-spacing:.11em; line-height:1.35;
+}
+[data-testid="stSidebar"] .sidebar-nav-group-count { color:#7896a5; letter-spacing:0; font-size:.64rem; }
+[data-testid="stSidebar"] [data-testid="stVerticalBlock"] { gap:.50rem !important; }
+
+/* Streamlit wraps every widget in an element container. Add separation to the
+   wrapper itself so group headings cannot visually collide with neighbouring
+   buttons when Streamlit's internal markup changes. */
+[data-testid="stSidebar"] [data-testid="stElementContainer"]:has(.sidebar-nav-title) {
+  margin-top:.1rem !important; margin-bottom:.18rem !important;
+}
+[data-testid="stSidebar"] [data-testid="stElementContainer"]:has(.sidebar-nav-group) {
+  margin-top:.38rem !important; margin-bottom:.14rem !important;
+}
+[data-testid="stSidebar"] [data-testid="stElementContainer"]:has(button[data-testid^="stBaseButton-"]) {
+  margin-top:.02rem !important; margin-bottom:.20rem !important;
+}
 
 /* Stable Streamlit button test IDs are used instead of the old kind= CSS
    attribute. The latter stopped matching current Streamlit button markup. */
@@ -137,10 +159,10 @@ hr { border-color: var(--line); }
   align-items:center !important;
   justify-content:flex-start !important;
   text-align:left !important;
-  min-height:1.82rem !important;
+  min-height:2.0rem !important;
   height:auto !important;
-  padding:.18rem .48rem !important;
-  border-radius:8px !important;
+  padding:.28rem .58rem !important;
+  border-radius:9px !important;
   border:1px solid #355064 !important;
   background:#1b3040 !important;
   background-color:#1b3040 !important;
@@ -175,10 +197,10 @@ hr { border-color: var(--line); }
   align-items:center !important;
   justify-content:flex-start !important;
   text-align:left !important;
-  min-height:1.82rem !important;
+  min-height:2.0rem !important;
   height:auto !important;
-  padding:.18rem .48rem !important;
-  border-radius:8px !important;
+  padding:.28rem .58rem !important;
+  border-radius:9px !important;
   border:1px solid #56d0c4 !important;
   background:#0d9488 !important;
   background-color:#0d9488 !important;
