@@ -25,7 +25,8 @@ class DiagramTests(unittest.TestCase):
         self.assertTrue(any("BC" in name for name in names))
         annotations = [str(item.text) for item in (figure.layout.annotations or [])]
         self.assertTrue(any("joint c" in text.lower() for text in annotations))
-        self.assertTrue(any("redundant reaction" in text.lower() for text in annotations))
+        self.assertIn("redundant horizontal reaction", figure.layout.title.text.lower())
+        self.assertFalse(any("one redundant reaction" in text.lower() for text in annotations), "The diagram should not use a floating callout over the members.")
         self.assertTrue(any(shape.type == "line" for shape in (figure.layout.shapes or [])), "The horizontal guide at C should be drawn.")
         # Important labels must be visible by default, not only on hover.
         visible_text = [str(item.text) for item in (figure.layout.annotations or [])]

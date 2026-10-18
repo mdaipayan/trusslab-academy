@@ -494,28 +494,26 @@ class DiagramFactory:
         cls._nodes(fig, nodes, highlight="C", label_positions={
             "A": "top left", "B": "top center", "C": "top left"
         })
-        cls._arrow(fig, (0.0, 4.05), (0.0, 3.0), "P = 10 kN ↓", cls.AMBER, (0.68, 3.88))
-        cls._arrow(fig, (-1.20, 2.70), (-0.02, 2.70), "R = Cₓ", cls.BLUE, (-1.18, 3.18))
+        # Offset the downward load slightly from member AC to keep both visible.
+        fig.add_trace(go.Scatter(x=[0.0, 0.14], y=[3.0, 3.0], mode="lines",
+                                 line={"color": cls.SLATE, "width": 1, "dash": "dot"},
+                                 hoverinfo="skip", showlegend=False, name="Load-to-joint connector"))
+        cls._arrow(fig, (0.14, 4.05), (0.14, 3.12), "P = 10 kN ↓", cls.AMBER, (0.82, 3.86))
+        cls._arrow(fig, (-1.20, 2.70), (-0.02, 2.70), "R = Cₓ", cls.BLUE, (-1.05, 3.20))
 
-        # Make member geometry and lengths readable without relying on hover.
+        # Publication-style labels: short, high contrast, no decorative callout over members.
         member_label_style = {
             "showarrow": False,
             "font": {"size": 12, "color": "#173042"},
-            "bgcolor": "rgba(255,255,255,0.97)",
-            "bordercolor": "#d8e2e8",
-            "borderwidth": 1,
-            "borderpad": 4,
+            "bgcolor": "rgba(255,255,255,0.96)",
+            "borderpad": 2,
         }
         fig.add_annotation(x=2.0, y=0.22, text="<b>AB · 4 m</b>", **member_label_style)
         fig.add_annotation(x=0.34, y=1.48, text="<b>AC · 3 m</b>", **member_label_style)
         fig.add_annotation(x=2.55, y=1.72, text="<b>BC · 5 m</b>", **member_label_style)
-        fig.add_annotation(x=2.72, y=2.58, text="3 members · 3 joints<br><b>one redundant reaction</b>",
-                           showarrow=False, bgcolor="#fff5d8", bordercolor="#e9bd53", borderwidth=1,
-                           borderpad=6, font={"size": 12, "color": "#5d4100"})
-        fig.add_annotation(x=1.95, y=-0.67, text="Ideal truss: point load is applied at joint C",
-                           showarrow=False, font={"size": 11, "color": "#08756d"},
-                           bgcolor="rgba(255,255,255,0.97)", bordercolor="#d8e2e8", borderwidth=1, borderpad=3)
-        return cls._base(fig, "Pin-jointed truss with a redundant horizontal support", 440,
+        fig.add_annotation(x=1.95, y=-0.67, text="Load applied at joint C",
+                           showarrow=False, font={"size": 10, "color": "#08756d"})
+        return cls._base(fig, "3–4–5 truss with redundant horizontal reaction", 440,
                          (-1.70, 5.0), (-1.0, 4.55), equal_scale=False)
 
     @classmethod
