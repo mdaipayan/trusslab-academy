@@ -245,8 +245,8 @@ class DiagramFactory:
         cls._roller_b(fig)
         cls._nodes(fig, nodes, label_positions={"A": "bottom left", "B": "bottom center", "C": "top left"})
         cls._arrow(fig, (0, 0), (0, .9), "Aᵧ = 10 kN", cls.BLUE, (.54, .48))
-        cls._arrow(fig, (4, 0), (4, .68), "Bᵧ = 0", cls.BLUE, (4.48, .43))
-        cls._arrow(fig, (-.05, 3), (.78, 3), "P = 10 kN ↓", cls.AMBER, (.42, 3.36))
+        fig.add_annotation(x=4.48, y=.38, text="Bᵧ = 0", showarrow=False, bgcolor="rgba(255,255,255,.96)", font={"size": 11, "color": cls.BLUE})
+        cls._arrow(fig, (0, 3), (0, 2.12), "P = 10 kN ↓", cls.AMBER, (.58, 2.55))
         fig.add_annotation(x=.22, y=2.55, ax=.10, ay=2.95, xref="x", yref="y", axref="x", ayref="y",
                            text="", showarrow=True, arrowhead=3, arrowsize=1,
                            arrowwidth=1.8, arrowcolor=cls.BLUE, standoff=1)
@@ -264,8 +264,8 @@ class DiagramFactory:
         cls._supports(fig, nodes, ("A",))
         cls._roller_b(fig)
         cls._nodes(fig, nodes, label_positions={"A": "bottom left", "B": "bottom center", "C": "top left"})
-        cls._arrow(fig, (-1.05, 0), (0, 0), "Aₓ = −1", cls.BLUE, (-.58, .28))
-        cls._arrow(fig, (0, -.72), (0, 0), "Aᵧ = −0.75", cls.BLUE, (.5, -.48))
+        cls._arrow(fig, (0, 0), (-1.05, 0), "Aₓ = −1", cls.BLUE, (-.58, .28))
+        cls._arrow(fig, (0, 0), (0, -.72), "Aᵧ = −0.75", cls.BLUE, (.52, -.48))
         cls._arrow(fig, (4, 0), (4, .70), "Bᵧ = +0.75", cls.BLUE, (4.6, .42))
         cls._arrow(fig, (0, 3), (1.0, 3), "1 unit →", cls.AMBER, (.62, 3.34))
         fig.add_annotation(x=2.15, y=1.48, text="<b>Virtual member forces</b><br>n_AB = +1<br>n_AC = +0.75<br>n_BC = −1.25",
@@ -282,7 +282,7 @@ class DiagramFactory:
         cls._supports(fig, nodes, ("A",))
         cls._roller_b(fig)
         cls._nodes(fig, nodes, label_positions={"A": "bottom left", "B": "bottom center", "C": "top left"})
-        cls._arrow(fig, (-1.05, 0), (0, 0), "Aₓ", cls.BLUE, (-.7, .28))
+        cls._arrow(fig, (0, 0), (.92, 0), "Aₓ", cls.BLUE, (.54, .28))
         cls._arrow(fig, (0, 0), (0, .7), "Aᵧ", cls.BLUE, (.35, .44))
         cls._arrow(fig, (4, 0), (4, .7), "Bᵧ", cls.BLUE, (4.4, .44))
         cls._arrow(fig, (0, 3), (1.0, 3), "Pₓ = 20 kN", cls.AMBER, (.68, 3.32))
@@ -303,7 +303,8 @@ class DiagramFactory:
         cls._arrow(fig, (0, 0), (1.15, 0), "Pₓ = 20 kN", cls.AMBER, (.65, .29))
         cls._arrow(fig, (0, 0), (0, -.95), "Pᵧ = 20 kN", cls.AMBER, (.62, -.68))
         cls._arrow(fig, (0, 0), (.96, -.72), "F_BC", cls.GREEN, (1.12, -.42))
-        cls._arrow(fig, (0, 0), (0, .85), "F_AC", cls.GREEN, (-.45, .55))
+        cls._arrow(fig, (-.13, -.02), (-.13, -.92), "F_AC · assumed tension", cls.GREEN, (-1.02, -.63))
+        fig.add_shape(type="line", x0=0, y0=0, x1=-.13, y1=0, line={"color": cls.SLATE, "width": 1, "dash": "dot"})
         fig.add_annotation(x=2.0, y=.48, text="<b>Joint C</b><br>Horizontal forces balance.<br>Vertical forces balance.",
                            showarrow=False, bgcolor="#e2f5f2", bordercolor="#b7e5de",
                            borderwidth=1, borderpad=8, font={"size": 12, "color": "#086b63"})
@@ -320,7 +321,8 @@ class DiagramFactory:
             cls._member(fig, nodes, a, b, label, color=cls.INK, width=3)
         # Dashed ghost denotes the released redundant and is not a working member.
         cls._member(fig, nodes, "B", "D", "BD removed redundant", color=cls.RED, width=2.5, dash="dash")
-        cls._supports(fig, nodes, ("A", "B"))
+        cls._supports(fig, nodes, ("A",))
+        cls._roller_b(fig)
         cls._nodes(fig, nodes)
         cls._arrow(fig, (4, 4.0), (4, 3.15), "P = 10 kN ↓", cls.AMBER, (4.55, 3.66))
         fig.add_annotation(x=2.0, y=1.38, text="<b>Primary structure</b><br>BD is removed temporarily.<br>Red dashed line = released member.",
