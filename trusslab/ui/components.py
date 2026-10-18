@@ -53,7 +53,7 @@ def _render_block(block: ContentBlock) -> None:
     if block.heading:
         st.markdown(f'<div class="content-heading">{escape(block.heading)}</div>', unsafe_allow_html=True)
     if block.kind == "paragraph":
-        st.markdown(f'<div class="content-body">{block.text}</div>', unsafe_allow_html=True)
+        st.markdown(block.text)
     elif block.kind in {"bullets", "steps"}:
         if block.kind == "steps":
             lines = [f"{index}. {item}" for index, item in enumerate(block.items, start=1)]
@@ -62,7 +62,7 @@ def _render_block(block: ContentBlock) -> None:
         st.markdown("\n".join(lines))
     elif block.kind == "formula":
         if block.text:
-            st.markdown(f'<div class="content-body">{block.text}</div>', unsafe_allow_html=True)
+            st.markdown(block.text)
         st.latex(block.formula)
     elif block.kind == "callout":
         tone = block.tone if block.tone in {"info", "success", "warning", "danger", "highlight"} else "info"
