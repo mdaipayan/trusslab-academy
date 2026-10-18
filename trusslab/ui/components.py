@@ -18,7 +18,7 @@ def inject_theme() -> None:
 
 
 
-def render_glossary() -> None:
+def render_abbreviations_page() -> None:
     """Render the standalone reference page for engineering symbols and abbreviations."""
     st.markdown('<div class="module-kicker">REFERENCE PAGE</div>', unsafe_allow_html=True)
     st.title("Abbreviations & symbols")
