@@ -39,3 +39,9 @@ def navigation_groups(module_ids: tuple[str, ...]) -> tuple[tuple[str, tuple[str
     if ungrouped:
         return groups + (("MORE", ungrouped),)
     return groups
+
+
+def navigation_label(module_id: str, mastered: bool = False) -> str:
+    """Return a concise sidebar label without a lesson number."""
+    label = NAV_LABELS.get(module_id, module_id.replace("-", " ").title())
+    return f"✓  {label}" if mastered else label
