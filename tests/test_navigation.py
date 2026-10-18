@@ -63,5 +63,16 @@ class SidebarNavigationTests(unittest.TestCase):
         self.assertNotIn('button[kind="secondary"]', theme_css)
 
 
+    def test_sidebar_groups_have_explicit_spacing_and_readable_button_height(self):
+        root = Path(__file__).parents[1]
+        theme_css = (root / "trusslab" / "ui" / "theme.py").read_text(encoding="utf-8")
+        self.assertIn(':has(.sidebar-nav-group)', theme_css)
+        self.assertIn('margin-top:.38rem !important; margin-bottom:.14rem !important;', theme_css)
+        self.assertIn('margin-top:.02rem !important; margin-bottom:.20rem !important;', theme_css)
+        self.assertIn('min-height:2.0rem !important;', theme_css)
+        self.assertIn('background:#1b3040 !important;', theme_css)
+        self.assertIn('color:#e5eef2 !important;', theme_css)
+
+
 if __name__ == "__main__":
     unittest.main()
