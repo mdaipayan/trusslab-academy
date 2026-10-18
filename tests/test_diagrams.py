@@ -41,5 +41,35 @@ class DiagramTests(unittest.TestCase):
         self.assertEqual(list(joint_trace.textposition), ["top left", "top center", "top left"])
 
 
+    def test_fbd_catalog_entries_have_color_coded_visible_diagrams(self):
+        modules = {module.id: module for module in get_modules()}
+        expected = {
+            "joints": ("joint_c_fbd",),
+            "sections": ("section_cut_fbd",),
+            "determinate-example": ("whole_truss_fbd", "joint_c_fbd"),
+            "truss-compatibility": ("released_truss_fbd", "unit_load_fbd"),
+            "indeterminate-triangle": ("loaded_truss_fbd", "joint_c_loaded_fbd"),
+            "force-method": ("released_rectangular_fbd",),
+        }
+        for module_id, diagram_ids in expected.items():
+            with self.subTest(module=module_id):
+                self.assertEqual(modules[module_id].free_body_ids, diagram_ids)
+                for diagram_id in diagram_ids:
+                    figure = DiagramFactory.build_free_body(diagram_id)
+                    self.assertTrue(figure.data or figure.layout.shapes or figure.layout.annotations)
+                    self.assertGreater(figure.layout.height, 0)
+                    self.assertIsNotNone(figure.layout.title.text)
+
+    def test_joint_fbd_uses_semantic_color_groups_and_force_labels(self):
+        figure = DiagramFactory.build_free_body("joint_c_fbd")
+        colors = [annotation.arrowcolor for annotation in (figure.layout.annotations or []) if getattr(annotation, "arrowcolor", None)]
+        self.assertIn("#d18b14", colors)  # applied load
+        self.assertIn("#16845a", colors)  # assumed tension
+        labels = [str(annotation.text) for annotation in (figure.layout.annotations or [])]
+        self.assertTrue(any("ΣFₓ = 0" in text for text in labels))
+        self.assertTrue(any("ΣFᵧ = 0" in text for text in labels))
+
+
+
 if __name__ == "__main__":
     unittest.main()

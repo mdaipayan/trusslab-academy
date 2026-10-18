@@ -18,6 +18,17 @@ MODULES = get_modules()
 LEARNING = LearningService()
 PROGRESS = ProgressService(st.session_state)
 
+FREE_BODY_TITLES = {
+    "joint_c_fbd": "Isolate joint C",
+    "section_cut_fbd": "Isolate the cut section",
+    "whole_truss_fbd": "Whole-truss equilibrium",
+    "released_truss_fbd": "Released primary truss",
+    "unit_load_fbd": "Unit-load case",
+    "loaded_truss_fbd": "Loaded truss",
+    "joint_c_loaded_fbd": "Loaded joint C",
+    "released_rectangular_fbd": "Remove redundant BD",
+}
+
 
 def _navigate(module_id: str) -> None:
     st.session_state["module_nav_radio"] = module_id
@@ -69,6 +80,48 @@ def _render_header() -> None:
     c.metric("Quizzes per module", "3 questions", "All 3 correct = mastery")
 
 
+
+def _render_free_body_diagrams(module: LessonModule) -> None:
+    """Show extra FBDs as a separate visual teaching aid."""
+    if not module.free_body_ids:
+        return
+
+    st.divider()
+    st.markdown("### Free-body diagrams")
+    st.markdown(
+        "A free-body diagram (FBD) shows **only the part you are analysing** and every force acting on it."
+    )
+    st.markdown(
+        '<div class="fbd-legend">'
+        '<span class="fbd-chip fbd-chip--load">Amber · applied loads</span>'
+        '<span class="fbd-chip fbd-chip--reaction">Blue · support reactions</span>'
+        '<span class="fbd-chip fbd-chip--tension">Green · assumed tension</span>'
+        '<span class="fbd-chip fbd-chip--compression">Red · compression / cut marker</span>'
+        '</div>',
+        unsafe_allow_html=True,
+    )
+
+    if len(module.free_body_ids) == 1:
+        fbd_id = module.free_body_ids[0]
+        st.plotly_chart(
+            DiagramFactory.build_free_body(fbd_id),
+            use_container_width=True,
+            config={"responsive": True, "displaylogo": False, "scrollZoom": False},
+            key=f"fbd_{module.id}_{fbd_id}",
+        )
+        return
+
+    tabs = st.tabs([FREE_BODY_TITLES.get(fbd_id, fbd_id.replace("_", " ").title()) for fbd_id in module.free_body_ids])
+    for tab, fbd_id in zip(tabs, module.free_body_ids):
+        with tab:
+            st.plotly_chart(
+                DiagramFactory.build_free_body(fbd_id),
+                use_container_width=True,
+                config={"responsive": True, "displaylogo": False, "scrollZoom": False},
+                key=f"fbd_{module.id}_{fbd_id}",
+            )
+
+
 def _render_module(module: LessonModule, index: int) -> None:
     done = PROGRESS.is_mastered(module.id)
     score = PROGRESS.best_score(module.id)
@@ -98,6 +151,8 @@ def _render_module(module: LessonModule, index: int) -> None:
             key=f"diagram_{module.id}",
         )
         st.markdown('<div class="muted">Hover over a joint or member for labels and coordinates. Diagrams are teaching schematics, not scale drawings.</div>', unsafe_allow_html=True)
+
+    _render_free_body_diagrams(module)
 
     if module.experiment_id:
         st.divider()

@@ -37,6 +37,25 @@ class DiagramFactory:
         except KeyError as exc:
             raise ValueError(f"Unknown diagram id: {diagram_id}") from exc
 
+
+    @classmethod
+    def build_free_body(cls, diagram_id: str) -> go.Figure:
+        """Build an isolated-joint, section, or whole-truss free-body diagram."""
+        methods = {
+            "joint_c_fbd": cls.joint_c_fbd,
+            "section_cut_fbd": cls.section_cut_fbd,
+            "whole_truss_fbd": cls.whole_truss_fbd,
+            "released_truss_fbd": cls.released_truss_fbd,
+            "unit_load_fbd": cls.unit_load_fbd,
+            "loaded_truss_fbd": cls.loaded_truss_fbd,
+            "joint_c_loaded_fbd": cls.joint_c_loaded_fbd,
+            "released_rectangular_fbd": cls.released_rectangular_fbd,
+        }
+        try:
+            return methods[diagram_id]()
+        except KeyError as exc:
+            raise ValueError(f"Unknown free-body diagram id: {diagram_id}") from exc
+
     @classmethod
     def _member(cls, fig: go.Figure, nodes: Mapping[str, Point], a: str, b: str,
                 label: str, color: str | None = None, width: float = 3.3,
@@ -128,6 +147,192 @@ class DiagramFactory:
         if equal_scale:
             fig.update_yaxes(scaleanchor="x", scaleratio=1)
         return fig
+
+
+    @classmethod
+    def _draw_three_member_truss(cls, fig: go.Figure, nodes: Mapping[str, Point]) -> None:
+        """Draw light members on a free-body diagram."""
+        for a, b, label in (("A", "B", "Member AB"), ("A", "C", "Member AC"), ("B", "C", "Member BC")):
+            cls._member(fig, nodes, a, b, label, color="#a9bbc5", width=2.5)
+
+    @classmethod
+    def _roller_b(cls, fig: go.Figure) -> None:
+        fig.add_shape(type="line", x0=3.62, x1=4.38, y0=-0.10, y1=-0.10,
+                      line={"color": cls.SLATE, "width": 2})
+        for xx in (3.78, 4.00, 4.22):
+            fig.add_shape(type="circle", x0=xx - 0.07, x1=xx + 0.07, y0=-0.28, y1=-0.14,
+                          line={"color": cls.SLATE, "width": 1.2}, fillcolor="#dce5eb")
+        fig.add_shape(type="line", x0=3.55, x1=4.45, y0=-0.31, y1=-0.31,
+                      line={"color": cls.SLATE, "width": 1.4})
+        for xx in (3.63, 3.83, 4.03, 4.23, 4.43):
+            fig.add_shape(type="line", x0=xx, x1=xx - 0.08, y0=-0.32, y1=-0.41,
+                          line={"color": "#9caeb9", "width": 1})
+
+    @classmethod
+    def whole_truss_fbd(cls) -> go.Figure:
+        """Whole free body of the determinate 3-4-5 truss."""
+        nodes = {"A": (0, 0), "B": (4, 0), "C": (0, 3)}
+        fig = go.Figure()
+        cls._draw_three_member_truss(fig, nodes)
+        cls._supports(fig, nodes, ("A",))
+        cls._roller_b(fig)
+        cls._nodes(fig, nodes, label_positions={"A": "bottom left", "B": "bottom center", "C": "top left"})
+        cls._arrow(fig, (0, 0), (-1.0, 0), "Aₓ = −20 kN", cls.BLUE, (-0.66, .27))
+        cls._arrow(fig, (0, 0), (0, .86), "Aᵧ = 5 kN", cls.BLUE, (.54, .48))
+        cls._arrow(fig, (4, 0), (4, .82), "Bᵧ = 15 kN", cls.BLUE, (4.52, .45))
+        cls._arrow(fig, (0, 3), (1.00, 3), "Pₓ = 20 kN", cls.AMBER, (.65, 3.34))
+        cls._arrow(fig, (.14, 4.05), (.14, 3.12), "Pᵧ = 20 kN", cls.AMBER, (.83, 3.79))
+        fig.add_annotation(x=2.35, y=1.25, text="<b>Whole truss</b><br>loads = reactions in balance",
+                           showarrow=False, bgcolor="#edf4ff", bordercolor="#cbdcf7",
+                           borderwidth=1, borderpad=7, font={"size": 13, "color": "#204a86"})
+        return cls._base(fig, "Free-body diagram · Whole truss", 450, (-1.6, 5.05), (-.78, 4.55), equal_scale=False)
+
+    @classmethod
+    def joint_c_fbd(cls) -> go.Figure:
+        """Isolated joint C for the 20 kN right + 20 kN downward example."""
+        fig = go.Figure()
+        # Joint C isolated at the origin.
+        fig.add_trace(go.Scatter(x=[0], y=[0], mode="markers+text", text=["C"],
+                                 textposition="top left",
+                                 marker={"size": 15, "color": cls.TEAL, "line": {"color": "#fff", "width": 2}},
+                                 textfont={"size": 14, "color": cls.INK}, showlegend=False,
+                                 hovertemplate="<b>Isolated joint C</b><extra></extra>"))
+        # The two downward forces share a line of action; tiny visual offsets make both labels readable.
+        cls._arrow(fig, (-.13, -.02), (-.13, -1.05), "F_AC · assumed tension", cls.GREEN, (-.95, -.65))
+        cls._arrow(fig, (.13, -.02), (.13, -1.05), "Pᵧ = 20 kN", cls.AMBER, (.85, -.8))
+        fig.add_shape(type="line", x0=0, y0=0, x1=-.13, y1=0, line={"color": cls.SLATE, "width": 1, "dash": "dot"})
+        fig.add_shape(type="line", x0=0, y0=0, x1=.13, y1=0, line={"color": cls.SLATE, "width": 1, "dash": "dot"})
+        cls._arrow(fig, (0, 0), (1.20, 0), "Pₓ = 20 kN", cls.AMBER, (.68, .29))
+        cls._arrow(fig, (0, 0), (.96, -.72), "F_BC · assumed tension", cls.GREEN, (1.13, -.45))
+        fig.add_annotation(x=2.25, y=.55, text="<b>Use force balance</b><br>ΣFₓ = 0<br>ΣFᵧ = 0",
+                           showarrow=False, bgcolor="#e2f5f2", bordercolor="#b7e5de",
+                           borderwidth=1, borderpad=8, font={"size": 13, "color": "#086b63"})
+        fig.add_annotation(x=1.85, y=-1.15, text="Green = assumed tension · Amber = applied load<br>Arrows are slightly offset for readability.",
+                           showarrow=False, bgcolor="rgba(255,255,255,.96)",
+                           font={"size": 10, "color": "#40586a"})
+        return cls._base(fig, "Free-body diagram · Isolate joint C", 430, (-1.65, 3.6), (-1.65, 1.0), equal_scale=False)
+
+    @classmethod
+    def section_cut_fbd(cls) -> go.Figure:
+        """Free body of the left portion after a cut through three members."""
+        nodes = {"A": (0, 0), "B": (1.35, 0), "F": (0, 1.15), "G": (1.35, 1.15)}
+        fig = go.Figure()
+        for a, b, label in (("A", "B", "AB kept member"), ("A", "F", "AF kept member"),
+                            ("F", "G", "FG kept member"), ("B", "G", "BG kept member"),
+                            ("A", "G", "AG kept diagonal")):
+            cls._member(fig, nodes, a, b, label, color=cls.INK, width=3)
+        cls._supports(fig, nodes, ("A",))
+        cls._nodes(fig, nodes)
+        # Support reactions act on the kept free body; arrows are assumed positive.
+        cls._arrow(fig, (-.08, 0), (-.08, .72), "Aᵧ", cls.BLUE, (-.36, .48))
+        cls._arrow(fig, (0, -.08), (.72, -.08), "Aₓ", cls.BLUE, (.43, -.31))
+        fig.add_shape(type="line", x0=1.62, x1=1.62, y0=-.18, y1=1.38,
+                      line={"color": cls.RED, "width": 2, "dash": "dash"})
+        cls._arrow(fig, (1.24, 0), (2.05, 0), "F_BC", cls.GREEN, (1.85, -.22))
+        cls._arrow(fig, (1.24, 1.15), (2.05, 1.15), "F_GH", cls.GREEN, (1.88, 1.42))
+        cls._arrow(fig, (1.28, .08), (1.95, .73), "F_BH", cls.GREEN, (2.18, .67))
+        fig.add_annotation(x=3.15, y=.78, text="<b>Cut forces</b><br>Assume tension first.<br>Let the equations tell you the sign.",
+                           showarrow=False, bgcolor="#e2f5f2", bordercolor="#b7e5de",
+                           borderwidth=1, borderpad=8, font={"size": 12, "color": "#086b63"})
+        fig.add_annotation(x=.65, y=1.53, text="Keep this side", showarrow=False,
+                           font={"size": 11, "color": cls.INK})
+        return cls._base(fig, "Free-body diagram · One side of a section cut", 420, (-.6, 4.25), (-.72, 1.85), equal_scale=False)
+
+    @classmethod
+    def released_truss_fbd(cls) -> go.Figure:
+        """Primary structure after releasing the redundant horizontal restraint at C."""
+        nodes = {"A": (0, 0), "B": (4, 0), "C": (0, 3)}
+        fig = go.Figure()
+        cls._draw_three_member_truss(fig, nodes)
+        cls._supports(fig, nodes, ("A",))
+        cls._roller_b(fig)
+        cls._nodes(fig, nodes, label_positions={"A": "bottom left", "B": "bottom center", "C": "top left"})
+        cls._arrow(fig, (0, 0), (0, .9), "Aᵧ = 10 kN", cls.BLUE, (.54, .48))
+        fig.add_annotation(x=4.48, y=.38, text="Bᵧ = 0", showarrow=False, bgcolor="rgba(255,255,255,.96)", font={"size": 11, "color": cls.BLUE})
+        cls._arrow(fig, (.14, 3.9), (.14, 3.12), "P = 10 kN ↓", cls.AMBER, (.82, 3.55))
+        fig.add_shape(type="line", x0=0, y0=3, x1=.14, y1=3, line={"color": cls.SLATE, "width": 1, "dash": "dot"})
+        cls._arrow(fig, (0.02, 3.35), (1.02, 3.35), "u_C is free", cls.BLUE, (.53, 3.65))
+        fig.add_annotation(x=.95, y=2.55, text="C can move horizontally<br>in the released structure",
+                           showarrow=False, bgcolor="#edf4ff", bordercolor="#cbdcf7",
+                           borderwidth=1, borderpad=6, font={"size": 11, "color": "#204a86"})
+        return cls._base(fig, "Primary structure · Redundant reaction released", 440, (-1.1, 5.0), (-.8, 4.25), equal_scale=False)
+
+    @classmethod
+    def unit_load_fbd(cls) -> go.Figure:
+        """Virtual system with a unit horizontal load at C."""
+        nodes = {"A": (0, 0), "B": (4, 0), "C": (0, 3)}
+        fig = go.Figure()
+        cls._draw_three_member_truss(fig, nodes)
+        cls._supports(fig, nodes, ("A",))
+        cls._roller_b(fig)
+        cls._nodes(fig, nodes, label_positions={"A": "bottom left", "B": "bottom center", "C": "top left"})
+        cls._arrow(fig, (0, 0), (-1.05, 0), "Aₓ = −1", cls.BLUE, (-.58, .28))
+        cls._arrow(fig, (0, 0), (0, -.72), "Aᵧ = −0.75", cls.BLUE, (.52, -.48))
+        cls._arrow(fig, (4, 0), (4, .70), "Bᵧ = +0.75", cls.BLUE, (4.6, .42))
+        cls._arrow(fig, (0, 3), (1.0, 3), "1 unit →", cls.AMBER, (.62, 3.34))
+        fig.add_annotation(x=2.15, y=1.48, text="<b>Virtual member forces</b><br>n_AB = +1<br>n_AC = +0.75<br>n_BC = −1.25",
+                           showarrow=False, bgcolor="#fff5d8", bordercolor="#f3c969",
+                           borderwidth=1, borderpad=8, font={"size": 12, "color": "#744900"})
+        return cls._base(fig, "Unit-load system · Load 1 unit to the right at C", 440, (-1.55, 5.15), (-1.0, 4.15), equal_scale=False)
+
+    @classmethod
+    def loaded_truss_fbd(cls) -> go.Figure:
+        """Whole-truss free body with the two source loads and redundant reaction R."""
+        nodes = {"A": (0, 0), "B": (4, 0), "C": (0, 3)}
+        fig = go.Figure()
+        cls._draw_three_member_truss(fig, nodes)
+        cls._supports(fig, nodes, ("A",))
+        cls._roller_b(fig)
+        cls._nodes(fig, nodes, label_positions={"A": "bottom left", "B": "bottom center", "C": "top left"})
+        cls._arrow(fig, (0, 0), (.92, 0), "Aₓ", cls.BLUE, (.54, .28))
+        cls._arrow(fig, (0, 0), (0, .7), "Aᵧ", cls.BLUE, (.35, .44))
+        cls._arrow(fig, (4, 0), (4, .7), "Bᵧ", cls.BLUE, (4.4, .44))
+        cls._arrow(fig, (0, 3), (1.0, 3), "Pₓ = 20 kN", cls.AMBER, (.68, 3.32))
+        cls._arrow(fig, (.14, 4.02), (.14, 3.12), "Pᵧ = 20 kN", cls.AMBER, (.82, 3.78))
+        # Redundant reaction is shown at the horizontal guide at C.
+        fig.add_shape(type="line", x0=-.68, x1=-.68, y0=2.3, y1=3.7,
+                      line={"color": cls.SLATE, "width": 3})
+        cls._arrow(fig, (-1.2, 2.72), (-.02, 2.72), "R = Cₓ", cls.BLUE, (-.95, 3.12))
+        return cls._base(fig, "Free-body diagram · Indeterminate truss", 440, (-1.65, 5.0), (-.8, 4.5), equal_scale=False)
+
+    @classmethod
+    def joint_c_loaded_fbd(cls) -> go.Figure:
+        """Loaded joint C for the indeterminate example."""
+        fig = go.Figure()
+        fig.add_trace(go.Scatter(x=[0], y=[0], mode="markers+text", text=["C"],
+                                 textposition="top left", marker={"size": 15, "color": cls.TEAL},
+                                 textfont={"size": 14, "color": cls.INK}, showlegend=False))
+        cls._arrow(fig, (0, 0), (1.15, 0), "Pₓ = 20 kN", cls.AMBER, (.65, .29))
+        cls._arrow(fig, (.13, 0), (.13, -.95), "Pᵧ = 20 kN", cls.AMBER, (.88, -.68))
+        fig.add_shape(type="line", x0=0, y0=0, x1=.13, y1=0, line={"color": cls.SLATE, "width": 1, "dash": "dot"})
+        cls._arrow(fig, (0, 0), (.96, -.72), "F_BC", cls.GREEN, (1.12, -.42))
+        cls._arrow(fig, (-.13, -.02), (-.13, -.92), "F_AC · assumed tension", cls.GREEN, (-1.02, -.63))
+        fig.add_shape(type="line", x0=0, y0=0, x1=-.13, y1=0, line={"color": cls.SLATE, "width": 1, "dash": "dot"})
+        fig.add_annotation(x=2.0, y=.48, text="<b>Joint C</b><br>Horizontal forces balance.<br>Vertical forces balance.",
+                           showarrow=False, bgcolor="#e2f5f2", bordercolor="#b7e5de",
+                           borderwidth=1, borderpad=8, font={"size": 12, "color": "#086b63"})
+        return cls._base(fig, "Free-body diagram · Loaded joint C", 400, (-1.0, 3.3), (-1.45, 1.2), equal_scale=False)
+
+    @classmethod
+    def released_rectangular_fbd(cls) -> go.Figure:
+        """Rectangular primary structure after removing the redundant diagonal BD."""
+        nodes = {"A": (0, 0), "B": (4, 0), "C": (4, 3), "D": (0, 3)}
+        fig = go.Figure()
+        members = (("A", "B", "AB"), ("B", "C", "BC"), ("C", "D", "CD"),
+                   ("D", "A", "DA"), ("A", "C", "AC retained"))
+        for a, b, label in members:
+            cls._member(fig, nodes, a, b, label, color=cls.INK, width=3)
+        # Dashed ghost denotes the released redundant and is not a working member.
+        cls._member(fig, nodes, "B", "D", "BD removed redundant", color=cls.RED, width=2.5, dash="dash")
+        cls._supports(fig, nodes, ("A",))
+        cls._roller_b(fig)
+        cls._nodes(fig, nodes)
+        cls._arrow(fig, (4.16, 3.92), (4.16, 3.15), "P = 10 kN ↓", cls.AMBER, (4.69, 3.62))
+        fig.add_shape(type="line", x0=4, y0=3, x1=4.16, y1=3, line={"color": cls.SLATE, "width": 1, "dash": "dot"})
+        fig.add_annotation(x=2.0, y=1.38, text="<b>Primary structure</b><br>BD is removed temporarily.<br>Red dashed line = released member.",
+                           showarrow=False, bgcolor="#fff0f0", bordercolor="#f3bcc3",
+                           borderwidth=1, borderpad=8, font={"size": 12, "color": "#8d1f2a"})
+        return cls._base(fig, "Free-body / primary structure · Internal redundant", 440, (-.75, 5.0), (-.75, 4.45), equal_scale=False)
 
     @classmethod
     def basic_truss(cls) -> go.Figure:
