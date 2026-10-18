@@ -110,5 +110,32 @@ hr { border-color: var(--line); }
 .fbd-chip--reaction { color: #245fbd; border-color: #bcd2f5; }
 .fbd-chip--tension { color: #16794b; border-color: #b8e5ce; }
 .fbd-chip--compression { color: #b42332; border-color: #f1b8be; }
+
+/* Compact, grouped learning-path sidebar */
+[data-testid="stSidebar"] .academy-brand { padding: .35rem 0 .25rem; }
+[data-testid="stSidebar"] .academy-eyebrow { color:#75d8cc; font-size:.66rem; font-weight:900; letter-spacing:.14em; text-transform:uppercase; }
+[data-testid="stSidebar"] .academy-brand-title { margin-top:.16rem; color:#fff; font-family:'Manrope','Segoe UI',sans-serif !important; font-size:1.45rem; font-weight:900; letter-spacing:-.045em; white-space:nowrap; }
+[data-testid="stSidebar"] .academy-brand-title span { color:#75d8cc; }
+[data-testid="stSidebar"] .academy-brand-copy { color:#afc4cf; font-size:.78rem; line-height:1.4; margin-top:.22rem; max-width:230px; }
+[data-testid="stSidebar"] .sidebar-section-kicker { color:#9eb4c0; font-size:.68rem; font-weight:850; letter-spacing:.12em; margin-bottom:.18rem; }
+[data-testid="stSidebar"] .sidebar-progress-row { display:flex; align-items:baseline; gap:.35rem; margin:.02rem 0 .1rem; }
+[data-testid="stSidebar"] .sidebar-progress-count { color:#fff; font-size:1.65rem; font-weight:900; line-height:1.1; }
+[data-testid="stSidebar"] .sidebar-progress-total { color:#b5c9d2; font-size:.82rem; font-weight:600; }
+[data-testid="stSidebar"] .sidebar-progress-percent { margin-left:auto; color:#75d8cc; font-size:.8rem; font-weight:850; }
+[data-testid="stSidebar"] .sidebar-nav-title { color:#edf5f7; font-size:.78rem; font-weight:850; letter-spacing:.09em; margin-bottom:.35rem; }
+[data-testid="stSidebar"] .sidebar-nav-group { display:flex; justify-content:space-between; align-items:center; padding:.42rem .1rem .25rem; margin-top:.06rem; color:#8eaab8; font-size:.63rem; font-weight:900; letter-spacing:.12em; }
+[data-testid="stSidebar"] .sidebar-nav-group-count { color:#6f8a99; letter-spacing:0; font-size:.68rem; }
+[data-testid="stSidebar"] .stButton > button { display:flex; align-items:center; justify-content:flex-start; text-align:left; padding:.42rem .63rem; min-height:2.3rem; border-radius:10px; font-size:.84rem; font-weight:650; line-height:1.22; white-space:normal; background:#1b3040; border-color:#2b4353; color:#dce8ed; box-shadow:none; }
+[data-testid="stSidebar"] .stButton > button:hover { background:#223d4e; border-color:#4f7889; color:#fff; transform:translateY(-1px); }
+[data-testid="stSidebar"] .stButton > button[kind="primary"] { background:#0d9488; border-color:#43c4b7; color:#fff; font-weight:850; box-shadow:0 3px 9px rgba(0,0,0,.12); }
+[data-testid="stSidebar"] .stButton > button[kind="primary"]:hover { background:#0b8278; border-color:#72d9cf; color:#fff; }
+[data-testid="stSidebar"] .sidebar-footer-note { color:#9eb4c0; font-size:.73rem; line-height:1.55; padding:.05rem 0 .3rem; }
+[data-testid="stSidebar"] .sidebar-footer-note strong { color:#e9f7f8; }
+[data-testid="stSidebar"] [data-testid="stProgressBar"] { margin:.08rem 0 .12rem; }
+@media (max-width: 850px) {
+  [data-testid="stSidebar"] .academy-brand-title { font-size:1.34rem; }
+  [data-testid="stSidebar"] .stButton > button { min-height:2.45rem; }
+}
+
 </style>
 """
